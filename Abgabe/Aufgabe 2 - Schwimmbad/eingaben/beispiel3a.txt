@@ -1,0 +1,17 @@
+False
+False
+1 # Es wird angenommen dass jeder Verein einen Gutschein hat
+18 # 14 Erw.
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18

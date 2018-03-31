@@ -1,0 +1,180 @@
+\documentclass[a4paper, 12pt]{scrartcl}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\usepackage{eurosym}
+\usepackage{textcomp}
+\usepackage{framed}
+\usepackage{listings}
+\usepackage{color}
+
+\usepackage{url}
+\usepackage{float}
+
+\usepackage{tikz}
+
+\allowdisplaybreaks
+
+\setlength{\parindent}{0pt}
+
+\title{36.\,BWInf Aufgabe 2\\Schwimmbad\\Dokumentation}
+\author{Kamal Abdellatif}
+\date{\today}
+
+\begin{document}
+\maketitle
+Das Problem lässt sich als klassisches ILP-Problem\footnote{\emph{engl. Integer Linear Programming}} darstellen. Das Ziel ist es den Gesamtpreis in Abhängigkeit der ganzzahligen Parameter, der Wahl von Tickets, zu optimieren. Die Parameter sind durch Bedingungen eingeschränkt, welche aus dem Wortlaut der in der Aufgabenstellung formulierten Regeln hervorgehen. ILP-Probleme sind im Allgemeinen NP-vollständig\footnote{\url{https://people.eecs.berkeley.edu/~luca/cs172/karp.pdf}}. Es wird nach Brute-Force vorgegangen. Das Programm probiert systematisch alle möglichen Angebotauswahlen mit den entsprechenden Gesamtpreisen aus, und wählt die des kleinsten Preises.
+
+Folgende Größen sind die Argumente von der Zielfunktion des Gesamtpreises $P_{ges}$
+\begin{align*}
+	e \in \mathbb{N}&:\text{Anzahl von Erwachsenen}  & j \in \mathbb{N}&:\text{Anzahl von Jugendlichen} \\
+	k \in \mathbb{N}&:\text{Anzahl von Kleinkindern} & g \in \mathbb{N}&:\text{Anzahl von Gutscheinen} \\
+\end{align*}
+Kleinkinder sind definiert als Personen mit Alter unter 4 Jahren, Jugendliche zwischen einschließlich 4 und einschließlich 16 Jahren, und Erwachsene über ausschließlich 16 Jahre. Da Kinder sich nicht auf die Preise an sich auswirken, werden diese zunächst vernachlässigt.
+\begin{figure}[H]
+	\centering
+	\begin{tabular}{lc}
+		Person & Alter (Intervall) \\
+		\hline
+		Kleinkind & $[0;4[$ \\
+		Jugendlicher & $[4;16]$ \\
+		Erwachsener\footnotemark & $]16;\infty[$
+	\end{tabular}
+\end{figure}
+\footnotetext{Unsterbliche werden nicht als erwachsen gezählt.}
+Der zeitliche Rahmen ist gegeben durch zwei Wahrheitswerte $W,\ F$.
+\begin{align*}
+	W \in \left\{ 0,\ 1 \right\} &:\text{1, wenn es sich um einen Arbeitstag handelt, sonst 0} \\
+	F \in \left\{ 0,\ 1 \right\} &:\text{1, wenn Ferien sind, sonst 0} \\
+\end{align*}
+Die ersten Parameter sind die Anzahlen von Personen, die von einem bestimmten Angebot betroffen sind und die Anzahl von Familien
+\begin{align*}
+	d &: \text{Anz. P. die durch einen Gutschein ermäßigt sind} \\
+	h &: \text{Anz. P. die durch einen Gutschein kostenlos eintreten} \\
+	t &: \text{Anz. P. die unter einer Tageskarte eintreten} \\
+	f_{22} &: \text{Anz. von Familien mit 2 Erwachsenen und 2 Jugendlichen} \\
+	f_{13} &: \text{Anz. von Familien mit 1 Erwachsenen und 3 Jugendlichen} \\\\
+	\tag{$d,\ h,\ t,\ f_{22},\ f_{13} \in \mathbb{N}$}
+\end{align*}
+Die ersten drei Parameter sind jeweils durch die Gesamtanzahl von Personen $e+j$ nach oben begrenzt. $h$ kann noch weiter eingegrenzt werden, sobald die Anzahl der verfügbaren Gutscheine $g$ kleiner als die Anzahl von Personen wird. Wenn keine Gutscheine vorhanden sind, so kann weiterhin keine Person durch einen solchen ermäßigt werden. Da Tageskarten nur wochentags erlaubt sind, ist die maximale Anzahl am Wochenende ($\neg W$) null. Die Bedingung der Ferien ist gleichzusetzen mit dem Ausdruck $F \Rightarrow g = 0$, da Gutscheine nicht in den Ferien gelten, und so als \glqq nicht vorhanden\grqq\ angesehen werden könen. Dies spiegelt sich in den logischen Ausdrücken wider. Die Anzahl von möglichen Familien geht aus der Verteilung von Kindern und Erwachsenen hervor.
+\begin{align*}
+	0 \le d &\le \begin{cases} e+j &\quad (g > 0 \:\wedge\: \neg F) \\ 0 &\quad (g = 0 \:\vee\: F) \end{cases} \\
+	0 \le h &\le \begin{cases} \min(g,\ e+j) &\quad (\neg F) \\ 0 &\quad (F) \end{cases} \\
+	0 \le t &\le \begin{cases} e + j &\quad (W) \\ 0 &\quad(\neg W)\end{cases} \\
+	0 \le f_{22} &\le \min \left( \frac{1}{2}\,e,\ \frac{1}{2}\,j \right) \\
+	0 \le f_{13} &\le \min \left( e,\ \frac{1}{3}\,j \right)
+\end{align*}
+Die Intervalle stellen die jeweilige Menge an möglichen Werten an, die ein Parameter annehmen kann.
+\begin{align*}
+	d &\in D &
+	h &\in H &
+	t &\in T &
+	f_{22} &\in F_{22} &
+	f_{13} &\in F_{13} & \\
+\end{align*}
+Jede mögliche Einstellung von allen Parametern, formal jedes mögliche Tupel, wird als das kartesische Produkt der einzelnen Möglichkeitsmengen erzeugt.
+\[ (d,\ h,\ t,\ f_{22},\ f_{13}) \in D \times H \times T \times F_{22} \times F_{13}\]
+Zu jedem Tupel $(d,\ h,\ t,\ f_{22},\ f_{13})$ von Personenanzahlen des jeweiligen Angebots gibt es mögliche Verteilungen. Eine Verteilung besteht aus den einzelnen Anzahlen von Jugendlichen und Erwachsenen des entsprechenden Angebots. Die Anzahl von Jugendlichen $x_j$ eines Angebots $x$ muss dabei mit der Anzahl von Erwachsenen $x_e$ in der Summe die Gesamtanzahl von Personen des Angebots ergeben. 
+\begin{align*}
+	d &= d_e + d_j &\quad h &= h_e + h_j &\quad t &= t_e + t_j \\
+	0 &\le d_e,\ d_j \le d &\quad 0 &\le h_e,\ h_j \le h &\quad 0 &\le t_e,\ t_j \le t \\\\
+	\tag{$d_e,\ d_j,\ h_e,\ h_j,\ t_e,\ t_j \in \mathbb{N}$}
+\end{align*}
+Da die Summe $x_e + x_j$ konstant sein muss, ergibt sich so für jedes $x_e$ genau ein $x_j$. So kann die Menge der möglichen Verteilungen wie bei den Gesamtanzahlen über das kartesische Produkt der Möglichkeiten erzeugt werden. Die jeweils korrespondierene Größe kann durch die Differenz mit der gegebenen Summe eindeutig ergänzt werden.
+\begin{align*}
+	(d_e,\ h_e,\ t_e) &\in [0;d] \times [0;h] \times [0;t] \\\\
+	d_j = d - d_e \qquad h_j &= h - h_e \qquad t_j = t - t_e
+\end{align*}
+Die einzig fehlenden Größen sind die Anzahl von Jugendlichen $g_j$ und Erwachsenen $g_e$, die ohne besonderes Angebot den normalen Basispreis entsprechend des zeitlichen Rahmens zahlen. Da die Gesamtanzahl von Jugendlichen $j$ und Erwachsenen $e$ gegeben sind, sind diese Werte eindeutig festgelegt, da sie in der Summe mit den jeweiligen Anzahlen der einzelnen Angebotsteilnehmer die vorgegebene Gesamtsumme ergeben müssen. Erfordert dies jedoch, dass $g_e$ oder $g_j$ negative Werte annehmen müssen, bedeutet das, dass die Einstellung ungültig ist, da die Angebotsbelegung die Anzahl von Personen überschreitet. Diese Fälle werden ignoriert.
+\begin{align*}
+	e &= g_e + d_e + h_e + t_e + 1 \cdot f_{13} + 2 \cdot f_{22} \\
+	j &= g_j + d_j + h_j + t_j + 3 \cdot f_{13} + 2 \cdot f_{22} \\
+\end{align*}
+So sind alle benötigten Anzahlen für die Preisberechnung vorhanden. Für jedes Angebot gibt es einen vorgeschriebenen Preis, welcher zum Teil vom zeitlichen Rahmen abhängt. Der Gesamtpreis errechnet sich aus der Summe aller Produkte von Angebotpreisen mit der jeweiligen Anzahl. Da der Preis minimiert werden soll, kann für die eigentliche Anzahl von verwendeten Tageskarten $K$ die Anzahl von Karten eingesetzt werden, die mindestens gebraucht wird, um alle Personen mit Tageskarten-Ermäßigung abzudecken.
+\[
+	K = \left\lceil \frac{t}{6} \right\rceil
+\]
+\begin{align*}
+	\text{Grundpreis Erwachsener}&: P_{ge} = 3,50\euro \cdot \begin{cases} 1 - 20\% \quad&(W) \\ 1 \quad&(\neg W) \end{cases} \\
+	\text{Grundpreis Jugendlicher}&: P_{gj} = 2,50\euro \cdot \begin{cases} 1 - 20\% \quad&(W) \\ 1 \quad&(\neg W) \end{cases} \\
+	\text{Tageskarte}&: P_t = 11,00\euro \\
+	\text{Familie}&: P_f = 8,00\euro \\
+	\text{Erwachsener mit Gutscheinerm.}&: P_{de} = P_{ge} \cdot (1 - 10\%) \\
+	\text{Jugendlicher mit Gutscheinerm.}&: P_{dj} = P_{gj} \cdot (1 - 10\%) \\
+\end{align*}
+
+\begin{framed}
+\textsf{Preisfunktion}
+\[
+	P_{ges} = P_{ge} \cdot g_e + P_{gj} \cdot g_j + P_t \cdot K + P_f \cdot (f_{22} + f_{13}) + P_{de} \cdot d_e + P_{dj} \cdot d_j
+\]
+\end{framed}
+% TODO drüberlesen
+\section*{Programm}
+Das Programm geht in der selben Reihenfolge wie oben beschrieben vor. Für jede mögliche Kombination von Personenanzahlen der einzelnen Angebote wird jede mögliche Verteilung dieser Personen auf die Angebote getestet. Für jeden Testfall wird der Gesamtpreis ermittelt. Falls der bisherige Minimal-Gesamtpreis unterboten wurde, so wird dieser durch den Preis ersetzt. So erhält nach vollständigem Durchtesten den Minimalpreis mit der Minimalbelegung.
+
+Kinder wurden bisher vernachlässigt. Ein Kind kann kostenlos eintreten, jedoch nur in Begleitung eines Erwachsenen. Daher kann jedes Kind einer beliebigen erwachsenen Begleitperson zugeordnet werden, insofern diese existiert. Dies hat keine Auswirkungen auf den Preis. Eine Belegung kann nur valide sein, wenn bei Vorhandensein von Kindern mindestens ein Erwachsener in der Gruppe enthalten ist. Es muss folglich die Bedingung $k > 0 \Rightarrow e > 0$ gelten, sonst ist keine gültige Belegung möglich.
+
+Für die in der Aufgabe formulierte Menge an Angeboten können bei genauerer Betrachtung von Spezialfällen Vereinfachungen gemacht werden, welche den Umfang der nötigen Berechnungen stark reduzieren würden. Dies ist jedoch immer abhängig von den in der Aufgabe gegebenen Bedingungen, und kann in Komplexität und überhaupt in Umsetzbarkeit stark variieren. Daher habe ich mich für eine verallgemeinerte Lösung entschieden, welche in Anbetracht des zu erwartenden Umfangs der Eingabedaten ohne Ausnutzung spezieller Eigenschaften der vorgegebenen Bedingungen in akzeptabler (polynomieller) Laufzeit immer ein zuverlässiges Ergebnis liefert.
+
+\section*{Testfälle}
+Das Eingabeformat erfolgt als Textdatei. In der ersten und zweiten Zeile stehen die Wahrheitswerte \texttt{True} oder \texttt{False} für Woche ($W$) und Ferien ($F$). Die dritte Zeile enthält die Anzahl verfügbarer Gutscheine. Die darauf folgenden Zeilen sind die Auflistung des Alters aller Personen. Das Programm wird über die Kommandozeile aufgerufen. Die Benutzung wird hier am gegebenen Beispiel in der Aufgabe gezeigt.
+
+\lstset{extendedchars=true, basicstyle=\ttfamily, literate={€}{\euro}1}
+\begin{lstlisting}[escapechar=\%]
+$ cat eingaben/beispiel0.txt 
+False %\#% Wochenende
+True  %\#% in den Ferien
+1  %\#% Coupons
+13 %\#% Antonia und 4 Freunde
+13
+13
+13
+2  %\#% Schwester
+45 %\#% Mutter
+$ ./schwimmbad.py eingaben/beispiel.txt
+
+               Angebot | Erwachsene | Jugendliche
+-----------------------+------------+-------------
+            Basispreis |     0      |      1     
+  Erm. durch Gutschein |     0      |      0     
+       Freie Eintritte |     0      |      0     
+ Erm. durch Tageskarte |     0      |      0     
+
+                       | Anzahl
+         --------------+--------
+           Tageskarten |   0   
+          2-2-Familien |   0   
+          1-3-Familien |   1   
+
+Gesamtpreis: 10.50€
+
+$
+\end{lstlisting}
+\newpage
+Die verwendeten Eingabedateien der folgenden Tests sind unter dem Ordner \texttt{eingaben/} zu finden. Es steht zuerst der Dateiname, gefolgt von Dateiinhalt und Programmausgabe mit optionalem Fazit.
+
+\lstinputlisting[escapechar=\%, basicstyle=\ttfamily\footnotesize\linespread{.5}]{tests.txt}
+\newpage
+\section*{Quellcode}
+
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+\lstinputlisting[
+	basicstyle=\ttfamily\footnotesize,
+	language=Python,
+	tabsize=2,
+	xleftmargin=-2.2cm,
+	keywordstyle=\color{deepblue},
+	emphstyle=\color{deepred},    % Custom highlighting style
+	stringstyle=\color{deepgreen},
+	frame=tb,                         % Any extra options here
+	showstringspaces=false,
+]{../schwimmbad.py}
+\end{document}

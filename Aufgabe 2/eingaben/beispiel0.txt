@@ -1,0 +1,9 @@
+False # Wochenende
+True  # in den Ferien
+1  # Coupons
+13 # Antonia und 4 Freunde
+13
+13
+13
+2  # Schwester
+45 # Mutter

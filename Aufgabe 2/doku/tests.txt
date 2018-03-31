@@ -1,0 +1,306 @@
+beispiel0.txt
+False %\#% Wochenende
+True  %\#% in den Ferien
+1  %\#% Coupons
+13 %\#% Antonia und 4 Freunde
+13
+13
+13
+2  %\#% Schwester
+45 %\#% Mutter
+
+               Angebot | Erwachsene | Jugendliche
+-----------------------+------------+-------------
+            Basispreis |     0      |      1     
+  Erm. durch Gutschein |     0      |      0     
+       Freie Eintritte |     0      |      0     
+ Erm. durch Tageskarte |     0      |      0     
+
+                       | Anzahl
+         --------------+--------
+           Tageskarten |   0   
+          2-2-Familien |   0   
+          1-3-Familien |   1   
+
+Gesamtpreis: 10.50€
+%\newpage%
+beispiel1a.txt
+True %\#% Wochentag
+True %\#% Ferien
+3
+18 %\#% 26 Schueler
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+40 %\#% Lehrerin
+
+               Angebot | Erwachsene | Jugendliche
+-----------------------+------------+-------------
+            Basispreis |     3      |      0     
+  Erm. durch Gutschein |     0      |      0     
+       Freie Eintritte |     0      |      0     
+ Erm. durch Tageskarte |     24     |      0     
+
+                       | Anzahl
+         --------------+--------
+           Tageskarten |   4   
+          2-2-Familien |   0   
+          1-3-Familien |   0   
+
+Gesamtpreis: 52.40€
+	%\newpage%
+beispiel1b.txt
+False %\#% Wochenende
+False %\#% Schulzeit
+3
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+40
+
+               Angebot | Erwachsene | Jugendliche
+-----------------------+------------+-------------
+            Basispreis |     0      |      0     
+  Erm. durch Gutschein |     25     |      0     
+       Freie Eintritte |     2      |      0     
+ Erm. durch Tageskarte |     0      |      0     
+
+                       | Anzahl
+         --------------+--------
+           Tageskarten |   0   
+          2-2-Familien |   0   
+          1-3-Familien |   0   
+
+Gesamtpreis: 78.75€
+%\#% Fazit:
+%\#%  Wenn die Klasse versucht, am Wochenende in der Schulzeit zu gehen, ist es
+%\#%  sogar erheblich teurer.
+	%\newpage%
+beispiel2a.txt
+True %\#% Wochentag
+True
+0
+3
+7
+10
+14
+17
+15
+40
+40
+
+               Angebot | Erwachsene | Jugendliche
+-----------------------+------------+-------------
+            Basispreis |     0      |      1     
+  Erm. durch Gutschein |     0      |      0     
+       Freie Eintritte |     0      |      0     
+ Erm. durch Tageskarte |     3      |      3     
+
+                       | Anzahl
+         --------------+--------
+           Tageskarten |   1   
+          2-2-Familien |   0   
+          1-3-Familien |   0   
+
+Gesamtpreis: 13.00€
+	%\newpage%
+beispiel2b.txt
+False %\#% Wochenende
+True
+0
+3
+7
+10
+14
+17
+15
+40
+40
+
+               Angebot | Erwachsene | Jugendliche
+-----------------------+------------+-------------
+            Basispreis |     1      |      2     
+  Erm. durch Gutschein |     0      |      0     
+       Freie Eintritte |     0      |      0     
+ Erm. durch Tageskarte |     0      |      0     
+
+                       | Anzahl
+         --------------+--------
+           Tageskarten |   0   
+          2-2-Familien |   1   
+          1-3-Familien |   0   
+
+Gesamtpreis: 16.50€
+	%\newpage%
+beispiel3a.txt
+False
+False
+1 %\#% Es wird angenommen dass jeder Verein einen Gutschein hat
+18 %\#% 14 Erw.
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+
+               Angebot | Erwachsene | Jugendliche
+-----------------------+------------+-------------
+            Basispreis |     0      |      0     
+  Erm. durch Gutschein |     14     |      0     
+       Freie Eintritte |     0      |      0     
+ Erm. durch Tageskarte |     0      |      0     
+
+                       | Anzahl
+         --------------+--------
+           Tageskarten |   0   
+          2-2-Familien |   0   
+          1-3-Familien |   0   
+
+Gesamtpreis: 44.10€
+	%\newpage%
+beispiel3b.txt
+False
+False
+1 %\#% Es wird angenommen dass jeder Verein einen Gutschein hat
+18 %\#% 18 Erw.
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+
+               Angebot | Erwachsene | Jugendliche
+-----------------------+------------+-------------
+            Basispreis |     0      |      0     
+  Erm. durch Gutschein |     18     |      0     
+       Freie Eintritte |     0      |      0     
+ Erm. durch Tageskarte |     0      |      0     
+
+                       | Anzahl
+         --------------+--------
+           Tageskarten |   0   
+          2-2-Familien |   0   
+          1-3-Familien |   0   
+
+Gesamtpreis: 56.70€
+	%\newpage%
+beispiel3c.txt
+False
+False
+2
+18 %\#% 32 = 14 + 18 Erwachsene
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+18
+
+               Angebot | Erwachsene | Jugendliche
+-----------------------+------------+-------------
+            Basispreis |     0      |      0     
+  Erm. durch Gutschein |     31     |      0     
+       Freie Eintritte |     1      |      0     
+ Erm. durch Tageskarte |     0      |      0     
+
+                       | Anzahl
+         --------------+--------
+           Tageskarten |   0   
+          2-2-Familien |   0   
+          1-3-Familien |   0   
+
+Gesamtpreis: 97.65€
+%\#% Fazit:
+%\#%   44.10€ + 56.70€ - 97.65€ = 3.15€
+%\#%   Die Vereine sparen zusammen 3.15€.
+	%\newpage%
