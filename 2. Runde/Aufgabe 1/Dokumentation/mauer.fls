@@ -1,10 +1,10 @@
-PWD /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku
+PWD /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation
 INPUT /etc/texmf/web2c/texmf.cnf
 INPUT /usr/share/texmf/web2c/texmf.cnf
 INPUT /usr/share/texlive/texmf-dist/web2c/texmf.cnf
 INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
-INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.tex
-OUTPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.log
+INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.tex
+OUTPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.log
 INPUT /home/kamal/texmf/tex/latex/koma-script/scrartcl.cls
 INPUT /home/kamal/texmf/tex/latex/koma-script/scrartcl.cls
 INPUT /home/kamal/texmf/tex/latex/koma-script/scrkbase.sty
@@ -195,21 +195,21 @@ INPUT /usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries
 INPUT /usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.meta.code.tex
 INPUT /usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.meta.code.tex
 INPUT /usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.meta.code.tex
-INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.aux
-INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.aux
-OUTPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.aux
+INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.aux
+INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.aux
+OUTPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.aux
 INPUT /usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 INPUT /usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 INPUT /usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
-INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.out
-INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.out
-INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.out
-INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.out
-OUTPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.pdf
-INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.out
-INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.out
-OUTPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.out
+INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.out
+INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.out
+INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.out
+INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.out
+OUTPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.pdf
+INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.out
+INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.out
+OUTPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.out
 INPUT /usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 INPUT /usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 INPUT /usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
@@ -275,9 +275,9 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam7.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecbx1200.tfm
-INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.aux
-INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.out
-INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.out
+INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.aux
+INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.out
+INPUT /home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.out
 INPUT /usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-t1.enc
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb

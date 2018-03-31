@@ -80,7 +80,7 @@ CImg<unsigned char> Wall::getImage() const {
 	CImg<unsigned char> image(width*size, height*size, 1, 1, 0);
 
 	std::vector<int> xpos(height, 0);
-	int slit = 1;
+	int slit = 0;
 	for (const auto& pair : solution) {
 		image.draw_rectangle(size*xpos.at(pair.first)+1, size*pair.first+1,
 			size*slit-1, size*(pair.first+1)-1, FOREGROUND);
@@ -96,18 +96,7 @@ CImg<unsigned char> Wall::getImage() const {
 #endif
 
 void Wall::printWall() const {
-	int end, s;
-	for (int y = 0; y < height; ++y) {
-		s = end = 0;
-		for (const auto& pair : solution) {
-			s += (1+pair.second);
-			if (pair.first == y) {
-				std::cout << s - end << " ";
-				end = s;
-			}
-		}
-		std::cout << width - end << std::endl;
-	}
+	std::cout << "broken" << std::endl;
 }
 
 bool pushSlit(Wall& wall, const int& row, const int& skip, bool first) {
@@ -124,9 +113,8 @@ bool pushSlit(Wall& wall, const int& row, const int& skip, bool first) {
 				place = wall.order.erase(next);
 				wall.order.push_back(nextRow);
 				if (pushSlit(wall, nextRow, nextSkip, false)) {
-					if (!first)
-						wall.solution.push_front(
-							std::make_pair(nextRow, nextSkip));
+					wall.solution.emplace_front(
+						std::make_pair(nextRow, nextSkip));
 					return true;
 				}
 				wall.order.pop_back();

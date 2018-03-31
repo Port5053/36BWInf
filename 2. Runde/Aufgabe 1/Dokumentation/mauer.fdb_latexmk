@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1522517827 "mauer.tex" "/home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.pdf" "mauer" 1522517827
+["pdflatex"] 1522518736 "mauer.tex" "/home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.pdf" "mauer" 1522518737
   "/etc/texmf/web2c/texmf.cnf" 1483289102 1101 af7716885e081ab43982cab7b4672c1a ""
-  "/home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.aux" 1522517827 3142 2587b615755dc9984af32272d3afbf5c ""
+  "/home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.aux" 1522518737 3142 2587b615755dc9984af32272d3afbf5c ""
   "/home/kamal/texmf/tex/latex/koma-script/scrartcl.cls" 1462882258 187036 3cbbcc3405d27bfff3821b779b729adb ""
   "/home/kamal/texmf/tex/latex/koma-script/scrbase.sty" 1462882258 74223 a658f66c8a1e24f5a8c9d748813babf8 ""
   "/home/kamal/texmf/tex/latex/koma-script/scrkbase.sty" 1462882258 20089 e982134e89ebfd1f7765524873e5a785 ""
@@ -176,13 +176,15 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1503343927 31343 93828589fb0cea665e553ee5a17ad2d4 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1505417784 1863403 f3ff9a4253bcb5fb9a9baaf0c572cb01 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1505417797 3862020 92bfdbf22e9d5ddf54890ed23b96493d ""
-  "mauer.aux" 1522517827 3142 2587b615755dc9984af32272d3afbf5c ""
-  "mauer.out" 1522517827 392 b4682d2082c94352f8a1fab8ecbfe1ab ""
-  "mauer.tex" 1522517826 21854 aa5f0f6820070a2cb33f217b8fe73e05 ""
+  "mauer.aux" 1522518737 3142 2587b615755dc9984af32272d3afbf5c ""
+  "mauer.out" 1522518737 392 b4682d2082c94352f8a1fab8ecbfe1ab ""
+  "mauer.tex" 1522518279 21855 1169ee62bf72eb41abd418b1a96af655 ""
   (generated)
   "mauer.pdf"
+  "/home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.pdf"
+  "/home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.pdf"
   "mauer.aux"
+  "/home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/Dokumentation/mauer.log"
   "/home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.log"
   "mauer.log"
   "mauer.out"
-  "/home/kamal/Documents/36. BWInf/2. Runde/Aufgabe 1/doku/mauer.pdf"
