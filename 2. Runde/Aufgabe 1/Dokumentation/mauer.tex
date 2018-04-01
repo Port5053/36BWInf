@@ -10,6 +10,7 @@
 \usepackage[noline]{algorithm2e}
 
 \usepackage{float}
+\usepackage{framed}
 \usepackage[hidelinks]{hyperref}
 
 \usepackage{tikz}
@@ -30,6 +31,7 @@
 \allowdisplaybreaks
 \newcommand{\numberthis}{\addtocounter{equation}{1}\tag{\theequation}}
 \numberwithin{equation}{section}
+\renewcommand{\labelenumi}{(\arabic{enumi})}
 
 \setlength{\parindent}{0pt}
 
@@ -171,10 +173,9 @@ Nach Anfügen des Steins hat sich in der $R$ die Anzahl $k$ von Steinen um eins 
 \end{align}
 Durch diese Vorgehensweise wird jede Spalte durch genau eine Fuge besetzt und in keiner Reihe wird ein Stein wiederholt. Wurden alle Reihen vollständig gefüllt, so ist eine Lösung gefunden worden.
 
-Das Backtracking öffnet einen neuen Suchzweig für jede mögliche Reihe, die zum Füllen der nächsten Spalte gewählt werden kann. Eine Reihe $R$ kann genau dann gewählt werden, wenn der benötigte Stein $b'$ noch nicht in $R$ enthalten ist. Ist keine Reihe mehr möglich, so muss der gesamte Suchzweig verworfen werden.
+Das Backtracking öffnet einen neuen Suchzweig für jede mögliche Reihe, die zum Füllen der nächsten Spalte gewählt werden kann. Eine Reihe $R$ kann genau dann gewählt werden, wenn der benötigte Stein $b'$ noch nicht in $R$ enthalten ist. Ist der Stein doch enthalten, oder sein Länge überschreitet $n$, so handelt es sich um eine \emph{Kollision}. Ist keine Reihe mehr möglich, so muss der gesamte Suchzweig verworfen werden.
 
 Das Backtracking geht in Tiefensuche vor und wird rekursiv implementiert. Jeder Rekursionsschritt besteht aus drei Schritten:
-\renewcommand{\labelenumi}{(\arabic{enumi})}
 \begin{enumerate}
 	\item Der zu untersuchende Schritt wird ausgeführt: Der Stein wird an die entsprechende Reihe angefügt und die aktuelle Spalte inkrementiert.
 	\item Alle Folgeschritte werden untersucht. Dazu wird durch alle möglichen Reihen iteriert. Der Erfolg des aktuellen Schrittes hängt davon ab, ob mindestens eine davon erfolgreich war.
@@ -331,7 +332,18 @@ Das Backtracking geht den gesamten Baum ab, bis eine Lösung gefunden wurde. Die
 	\end{figure}
 \end{minipage}
 \\\\\\
-Um die Laufzeit der Suche zu verringern, wird eine Suchheuristik angewendet, welche die Reihenfolge der betrachteten Möglichkeiten beeinflusst. Eine solche Heuristik sollte die Schritte zuerst stellen, die eine höhere Wahrscheinlichkeit haben zielführend zu sein.
+Um die Laufzeit der Suche zu verringern, wird eine Suchheuristik angewendet, welche die Reihenfolge der betrachteten Möglichkeiten beeinflusst. Eine solche Heuristik sollte die Schritte zuerst wählen, die eine höhere Wahrscheinlichkeit haben, zielführend zu sein. So verringert sich die durchschnittliche Größe des betrachtenten Teilbaums. Ausschlaggebend für diese Größe ist unter Anderem die Anzahl von vorgekommenen Kollisionen.
+\\\\
+Werden die Reihen immer in der gleichen Reihenfolge betrachtet, entsteht eine Ungleichgewichtung in den Steinlängen. Es wird immer versucht, die nächste Fuge zuerst in den oben liegenden Reihen zu setzen. So werden tendenziell mehr Fugen in den oberen Reihen und weniger in den unteren gesetzt. Eine höhere Dichte an Fugen führt zu kleineren Steinlängen. Daher füllen sich die oberen Reihen zuerst mit kurzen Steinlängen und die unteren mit Langen. Dieses Verhalten erzeugt eine erhöhte Anzahl von Kollisionen: Werden beispielsweise in den oberen Reihen kurze Steinlängen bevorzugt, so ist es beim Anfügen eines weiteren kurzen Steins warscheinlicher, dass dieser schon verwendet wurde. Gleiches gilt für die unteren Reihen mit langen Steinen. Im Anhang (TODO ref me) wird die Kollisionshäufigkeit genauer statistisch untersucht. Die Beobachtungen unterstützen die obigen Vorhersagen?
+\\\\
+Die gewählte Heuristik wirkt diesem Effekt entgegen.
+\begin{framed}
+	\centering
+	Reihen werden nach aufsteigender Länge betrachtet.
+\end{framed}
+Durch Ordnung nach aufsteigender Länge werden immer zuerst die kürzesten Reihen betrachtet. So bleibt die Längenverteilung innerhalb der Reihen gleichmäßig, da keine Reihe zurückfallen kann. Das Anfügen eines Steins verlängert die gewählte Reihe. Da bis zu einer bisher ungefüllten Spalte aufgefüllt wird, ist die Reihe nach Auffüllen die längste Reihe der Mauer. Die Reihenfolge der restlichen Reihen bleibt erhalten.
+
+Um nach jedem Schritt die Ordnung der Reihen zu erhalten, wird die aufgefüllte Reihe an das Ende der Reihenfolge gesetzt. Nachdem das ich
 \newpage
 \section{Anhang}
 \begin{algorithm}[H]
