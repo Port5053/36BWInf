@@ -7,6 +7,7 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 
+
 \usepackage[noline]{algorithm2e}
 
 \usepackage{float}
@@ -95,7 +96,7 @@ Wird diese Höhe erreicht, so ist die Anzahl $r$ der noch offenen Spalten die Di
 	r &= (w-1) - h_{max}(n-1) \\
 	&= \left( \frac{n(n+1)}{2} - 1 \right) - \frac{n+1}{2}\,(n-1) \\
 	&= \frac{(n+1)(n-1)+n-1}{2}-\frac{(n+1)(n-1)}{2} \\
-	&= \frac{1}{2}(n-1) \qquad (2 \nmid [TODO BEAUTIFY] n) \numberthis\label{eq:offen}
+	&= \frac{1}{2}(n-1) \qquad (2 \nmid n) \numberthis\label{eq:offen}
 \end{align*}
 Für eine Mauer ungeraden $n$ ohne Überschneidungen müssen mindestens $r = \frac{1}{2}(n-1)$ Spalten offen bleiben.
 \section{Backtrakcing}
@@ -372,28 +373,89 @@ Werden die Fugen anfänglich nur oben gesetzt, so können untere Reihen sogar so
 Im Beispiel von Abbildung (\ref{fig:sackgasse}) können die oberen drei Reihen nicht besetzt werden, da die benötigten Steine schon verbaut sind. Allerdings sind schon die ersten zehn Spalten besetzt, sodass seit vier Schritten schon die unterste Reihe nicht mehr besetzbar war.
 \\\\
 Im Anhang (TODO ref me) wird die Kollisionshäufigkeit genauer statistisch untersucht. Die Beobachtungen unterstützen die obigen Vorhersagen?
-\\\\
+\newpage
 Die gewählte Heuristik wirkt diesen Effekten entgegen.
 \begin{framed}
 	\centering
+	\textsc{\raggedleft Suchheuristik}\\
 	Reihen werden nach aufsteigender Länge betrachtet.
 \end{framed}
-Durch Ordnung nach aufsteigender Länge werden immer zuerst die kürzesten Reihen betrachtet. So bleibt die Längenverteilung innerhalb der Reihen gleichmäßig, da keine Reihe zurückfallen kann. Das Anfügen eines Steins verlängert die gewählte Reihe. Da bis zu einer bisher ungefüllten Spalte aufgefüllt wird, ist die Reihe nach Auffüllen die längste Reihe der Mauer. Die Reihenfolge der restlichen Reihen bleibt erhalten.
+Durch Ordnung nach aufsteigender Länge werden immer zuerst die kürzesten Reihen betrachtet. So bleibt die Längenverteilung innerhalb der Reihen gleichmäßig, da keine Reihe zurückfallen kann.
 \begin{figure}[H]
 	\centering
-	\begin{tikzpicture}[scale=.75]
-		\draw[very thick] (0, 0) rectangle (15, 3);
-		\draw[very thick, fill=white]
-		(0, 0) rectangle (1, 1)
-		(1, 0) rectangle (4, 1)
-		(4, 0) rectangle (6, 1)
-		(0, 1) rectangle (2, 2)
-		(2, 1) rectangle (5, 2)
-		(0, 2) rectangle (3, 3);
-		\draw[very thick, gray, fill=white] (3.1, 2.1) rectangle (7.1, 3.1);
+	\begin{tikzpicture}[scale=.5]
+		\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;
+		\node at (6, -1) {(a)};
+		\draw[very thick]
+			(0, 0) rectangle ++(5, 1)
+			(5, 0) rectangle ++(4, 1)
+			(0, 1) rectangle ++(2, 1)
+			(2, 1) rectangle ++(6, 1)
+			(0, 2) rectangle ++(1, 1)
+			(1, 2) rectangle ++(2, 1)
+			(3, 2) rectangle ++(4, 1)
+			(0, 3) rectangle ++(4, 1)
+			(4, 3) rectangle ++(2, 1)
+			(0, 0) -- (0, 4) -- (12, 4)
+			(0, 0) -- (12, 0);
 	\end{tikzpicture}
-	\caption{Bla}
+	\begin{tikzpicture}[scale=.5]
+		\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;
+		\node at (6, -1) {(b)};
+		\draw[very thick]
+			(0, 0) rectangle ++(5, 1)
+			(5, 0) rectangle ++(4, 1)
+			(0, 1) rectangle ++(2, 1)
+			(2, 1) rectangle ++(6, 1)
+			(0, 2) rectangle ++(1, 1)
+			(1, 2) rectangle ++(2, 1)
+			(3, 2) rectangle ++(4, 1)
+			(0, 3) rectangle ++(4, 1)
+			(4, 3) rectangle ++(2, 1)
+			(0, 0) -- (0, 4) -- (12, 4)
+			(0, 0) -- (12, 0);
+		\draw[very thick, gray] (7.2, 2.2) rectangle ++(3, 1);
+	\end{tikzpicture}
+	\begin{tikzpicture}[scale=.5]
+		\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;
+		\node at (6, -1) {(c)};
+		\draw[very thick, opacity=.2, dashed]
+			(0, 0) rectangle ++(5, 1)
+			(5, 0) rectangle ++(4, 1)
+			(0, 1) rectangle ++(2, 1)
+			(2, 1) rectangle ++(6, 1)
+			(0, 2) rectangle ++(1, 1)
+			(1, 2) rectangle ++(2, 1)
+			(3, 2) rectangle ++(4, 1)
+			(0, 3) rectangle ++(4, 1)
+			(4, 3) rectangle ++(2, 1);
+		\draw[very thick]
+			(0, 2) rectangle ++(1, 1)
+			(1, 2) rectangle ++(2, 1)
+			(3, 2) rectangle ++(4, 1)
+			(7, 2) rectangle ++(3, 1);
+		\path[-{latex}, very thick] (-.2, 2.5) edge[bend right=40] (-.2, -.5);
+	\end{tikzpicture}
+	\begin{tikzpicture}[scale=.5]
+		\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;
+		\node at (6, -1) {(d)};
+		\draw[very thick]
+			(0, 0) rectangle ++(1, 1)
+			(1, 0) rectangle ++(2, 1)
+			(3, 0) rectangle ++(4, 1)
+			(7, 0) rectangle ++(3, 1)
+			(0, 1) rectangle ++(5, 1)
+			(5, 1) rectangle ++(4, 1)
+			(0, 2) rectangle ++(2, 1)
+			(2, 2) rectangle ++(6, 1)
+			(0, 3) rectangle ++(4, 1)
+			(4, 3) rectangle ++(2, 1)
+			(0, 0) -- (0, 4) -- (12, 4)
+			(0, 0) -- (12, 0);
+	\end{tikzpicture}
+	\caption{Umordnung nach Anfügen eines Steins}
 \end{figure}
+Das Anfügen eines Steins verlängert die gewählte Reihe. Da bis zu einer bisher ungefüllten Spalte aufgefüllt wird, ist die Reihe nach Auffüllen die längste Reihe der Mauer. Demnach rutscht die gewählte Reihe immer an das Ende der Ordnung. Die Reihenfolge der restlichen Reihen bleibt erhalten. War ein Schritt nicht erfolgreich, müssen die unternommenen Veränderungen für das Backtracking rückgängig gemacht werden. Die gewählte Reihe muss demnach wieder an die vorherige Position in der Ordnung gesetzt werden.
 \newpage
 \section{Anhang}
 \begin{algorithm}[H]
