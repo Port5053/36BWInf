@@ -334,16 +334,66 @@ Das Backtracking geht den gesamten Baum ab, bis eine Lösung gefunden wurde. Die
 \\\\\\
 Um die Laufzeit der Suche zu verringern, wird eine Suchheuristik angewendet, welche die Reihenfolge der betrachteten Möglichkeiten beeinflusst. Eine solche Heuristik sollte die Schritte zuerst wählen, die eine höhere Wahrscheinlichkeit haben, zielführend zu sein. So verringert sich die durchschnittliche Größe des betrachtenten Teilbaums. Ausschlaggebend für diese Größe ist unter Anderem die Anzahl von vorgekommenen Kollisionen.
 \\\\
-Werden die Reihen immer in der gleichen Reihenfolge betrachtet, entsteht eine Ungleichgewichtung in den Steinlängen. Es wird immer versucht, die nächste Fuge zuerst in den oben liegenden Reihen zu setzen. So werden tendenziell mehr Fugen in den oberen Reihen und weniger in den unteren gesetzt. Eine höhere Dichte an Fugen führt zu kleineren Steinlängen. Daher füllen sich die oberen Reihen zuerst mit kurzen Steinlängen und die unteren mit Langen. Dieses Verhalten erzeugt eine erhöhte Anzahl von Kollisionen: Werden beispielsweise in den oberen Reihen kurze Steinlängen bevorzugt, so ist es beim Anfügen eines weiteren kurzen Steins warscheinlicher, dass dieser schon verwendet wurde. Gleiches gilt für die unteren Reihen mit langen Steinen. Im Anhang (TODO ref me) wird die Kollisionshäufigkeit genauer statistisch untersucht. Die Beobachtungen unterstützen die obigen Vorhersagen?
+Werden die Reihen immer in der gleichen Reihenfolge betrachtet, entsteht eine Ungleichgewichtung in den Steinlängen. Es wird immer versucht, die nächste Fuge zuerst in den oben liegenden Reihen zu setzen. So werden tendenziell mehr Fugen in den oberen Reihen und weniger in den unteren gesetzt. Eine höhere Dichte an Fugen führt zu kleineren Steinlängen. Daher füllen sich die oberen Reihen zuerst mit kurzen Steinlängen und die unteren mit Langen. Dieses Verhalten erzeugt eine erhöhte Anzahl von Kollisionen: Werden beispielsweise in den oberen Reihen kurze Steinlängen bevorzugt, so ist es beim Anfügen eines weiteren kurzen Steins warscheinlicher, dass dieser schon verwendet wurde. Gleiches gilt für die unteren Reihen mit langen Steinen.
+
+Werden die Fugen anfänglich nur oben gesetzt, so können untere Reihen sogar so weit zurückfallen, dass selbst der längste Stein nicht zum Auffüllen ausreicht. Da die unteren Reihen erst dann betrachtet werden, wenn alle Oberen keine Kapazität mehr haben, werden diese Suchzweige erst sehr spät abgebrochen. Dies führt zu vollständigen Suchzweigen, die verworfen werden müssen, da die unteren Reihen von Anfang an nicht mehr füllbar waren.
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[scale=.75]
+		\draw[ultra thick] (0, 1) rectangle ++(4, 1)
+		                  (4, 1) rectangle ++(3, 1)
+		                  (7, 1) rectangle ++(1, 1)
+		                  (0, 2) rectangle ++(2, 1)
+		                  (2, 2) rectangle ++(3, 1)
+		                  (5, 2) rectangle ++(4, 1)
+		                  (0, 3) rectangle ++(1, 1)
+		                  (1, 3) rectangle ++(2, 1)
+		                  (3, 3) rectangle ++(3, 1)
+		                  (6, 3) rectangle ++(4, 1)
+		                  (0, 0) -- (0, 4) -- (15, 4)
+		                  (0, 0) -- (15, 0);
+		% \path[{latex}-, dashed, thick](1, -0.5) edge (1, 3)
+		                     % (2, -0.7) edge (2, 2)
+		                     % (3, -0.9) edge (3, 3)
+		                     % (4, -1.1) edge (4, 1)
+		                     % (5, -1.3) edge (5, 2)
+		                     % (6, -1.5) edge (6, 3);
+		% \draw[ultra thick, gray, fill=white] (0, -1.5) rectangle ++(6, -1);
+		% \draw[ultra thick, gray, fill=white] (0, -1.3) rectangle ++(5, -1);
+		% \draw[ultra thick, gray, fill=white] (0, -1.1) rectangle ++(4, -1);
+		% \draw[ultra thick, gray, fill=white] (0, -0.9) rectangle ++(3, -1);
+		% \draw[ultra thick, gray, fill=white] (0, -0.7) rectangle ++(2, -1);
+		% \draw[ultra thick, gray, fill=white] (0, -0.5) rectangle ++(1, -1);
+
+		\draw[dashed, very thick] (11, -.25) -- (11, 4.25);
+	\end{tikzpicture}
+	\caption{erste Sackgasse im Backtracking für $n=6$}\label{fig:sackgasse}
+\end{figure}
+Im Beispiel von Abbildung (\ref{fig:sackgasse}) können die oberen drei Reihen nicht besetzt werden, da die benötigten Steine schon verbaut sind. Allerdings sind schon die ersten zehn Spalten besetzt, sodass seit vier Schritten schon die unterste Reihe nicht mehr besetzbar war.
 \\\\
-Die gewählte Heuristik wirkt diesem Effekt entgegen.
+Im Anhang (TODO ref me) wird die Kollisionshäufigkeit genauer statistisch untersucht. Die Beobachtungen unterstützen die obigen Vorhersagen?
+\\\\
+Die gewählte Heuristik wirkt diesen Effekten entgegen.
 \begin{framed}
 	\centering
 	Reihen werden nach aufsteigender Länge betrachtet.
 \end{framed}
 Durch Ordnung nach aufsteigender Länge werden immer zuerst die kürzesten Reihen betrachtet. So bleibt die Längenverteilung innerhalb der Reihen gleichmäßig, da keine Reihe zurückfallen kann. Das Anfügen eines Steins verlängert die gewählte Reihe. Da bis zu einer bisher ungefüllten Spalte aufgefüllt wird, ist die Reihe nach Auffüllen die längste Reihe der Mauer. Die Reihenfolge der restlichen Reihen bleibt erhalten.
-
-Um nach jedem Schritt die Ordnung der Reihen zu erhalten, wird die aufgefüllte Reihe an das Ende der Reihenfolge gesetzt. Nachdem das ich
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[scale=.75]
+		\draw[very thick] (0, 0) rectangle (15, 3);
+		\draw[very thick, fill=white]
+		(0, 0) rectangle (1, 1)
+		(1, 0) rectangle (4, 1)
+		(4, 0) rectangle (6, 1)
+		(0, 1) rectangle (2, 2)
+		(2, 1) rectangle (5, 2)
+		(0, 2) rectangle (3, 3);
+		\draw[very thick, gray, fill=white] (3.1, 2.1) rectangle (7.1, 3.1);
+	\end{tikzpicture}
+	\caption{Bla}
+\end{figure}
 \newpage
 \section{Anhang}
 \begin{algorithm}[H]
