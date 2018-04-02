@@ -15,7 +15,7 @@
 \usepackage[hidelinks]{hyperref}
 
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta}
+\usetikzlibrary{arrows.meta, backgrounds}
 
 \newcommand{\mycommentsty}[1]{\itshape\textcolor{gray}{#1}}
 \SetCommentSty{mycommentsty}
@@ -31,8 +31,10 @@
 
 \allowdisplaybreaks
 \newcommand{\numberthis}{\addtocounter{equation}{1}\tag{\theequation}}
-\numberwithin{equation}{section}
 \renewcommand{\labelenumi}{(\arabic{enumi})}
+\renewcommand{\labelenumii}{(\alph{enumii})}
+
+\newcommand{\see}[1]{\hfill\emph{siehe} (\ref{#1})}
 
 \setlength{\parindent}{0pt}
 
@@ -43,9 +45,9 @@
 \begin{document}
 \maketitle
 \section{Obere Schranke}
-Die Höhe einer Mauer von beliebigem $n$ ist nach oben beschränkt. Eine Mauer ist so breit wie die Summe der Längen $\ell$ aller Steine in einer Reihe. Da sich zwischen den Steinen nur die Reihenfolge ändert, entspricht die Breite jeder Reihe der Breite $w$ der Mauer.
+Die Höhe einer Mauer von beliebigem $n$ ist nach oben beschränkt. Eine Mauer ist so breit wie die Summe der Längen $b$ aller Steine in einer Reihe. Da sich zwischen den Steinen nur die Reihenfolge ändert, entspricht die Breite jeder Reihe der Breite $w$ der Mauer.
 \begin{equation}\label{eq:width}
-	w = \sum_{\ell = 1}^n \ell = \frac{1}{2}n(n+1)
+	w = \sum_{b = 1}^n b = \frac{1}{2}n(n+1)
 \end{equation}
 In jeder Reihe befinden sich genau $n-1$ Fugen, da auf jeden der $n$ Steine in der Reihe genau eine Fuge folgt, mit Ausnahme des letzten Steins. Besitzt die Mauer eine Höhe $h$, so ist die Anzahl aller Fugen in der gesamten Mauer $h(n-1)$.\\
 Eine Fuge nimmt entlang der Breite der Mauer eine bestimmte Position ein. Jede mögliche Position ist eine \emph{Spalte}, wobei die $i$-te Spalte den Abstand $i$ zum linken Mauerrand besitzt. Liegt auf einer Spalte eine Fuge, so ist die Spalte \emph{besetzt}.
@@ -76,7 +78,11 @@ Hat eine Mauer keine sich überschneidenden Fugen, so kann jede Spalte von maxim
 	h &\le \frac{\frac{1}{2}\,n(n+1)-1}{n-1} = \frac{\frac{1}{2}\,n(n-1)+n-1}{n-1} \\
 	h &\le \frac{1}{2}n + 1 \numberthis\label{eq:schranke}
 \end{align*}
-Nur für gerade $n$ nimmt diese obere Schranke ganzzahlige Werte an. Die Schranke ist genau dann erreicht, wenn jede Spalte durch genau eine Fuge belegt ist. Für ungerade $n$ ist die Schranke nie ganzzahlig, sodass sie nie erreicht werden kann. Demnach müssen im ungeraden Fall immer Spalten offen bleiben.
+Nur für gerade $n$ nimmt diese obere Schranke ganzzahlige Werte an. Die Schranke ist genau dann erreicht, wenn jede Spalte durch genau eine Fuge belegt ist.
+\begin{equation}\label{eq:evenheight}
+	h_{max} = \frac{1}{2}n + 1 \qquad (2 \mid n)
+\end{equation}
+Für ungerade $n$ ist die Schranke nie ganzzahlig, sodass sie nie erreicht werden kann. Demnach müssen im ungeraden Fall immer Spalten offen bleiben.
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}[scale=.75]
@@ -88,25 +94,27 @@ Nur für gerade $n$ nimmt diese obere Schranke ganzzahlige Werte an. Die Schrank
 	\caption{Offene Spalten bei ungeraden $n$}
 \end{figure}
 Die größte erreichbare Höhe $h_{max}$ für ungerade $n$ ist gleich der größten ganzen Zahl unter der Schranke. Aus Gleichung (\ref{eq:schranke}) ergibt sich
-\begin{equation}\label{eq:height}
-	h_{max} = \frac{1}{2}(n-1)+1 = \frac{1}{2}n+1
+\begin{equation}\label{eq:oddheight}
+	h_{max} = \frac{1}{2}(n-1)+1 = \frac{1}{2}(n+1) \qquad (2 \nmid n)
 \end{equation}
 Wird diese Höhe erreicht, so ist die Anzahl $r$ der noch offenen Spalten die Differenz aus der Anzahl aller Spalten $w-1$ und der Anzahl besetzter Spalten $h_{max}(n-1)$.
 \begin{align*}
 	r &= (w-1) - h_{max}(n-1) \\
 	&= \left( \frac{n(n+1)}{2} - 1 \right) - \frac{n+1}{2}\,(n-1) \\
 	&= \frac{(n+1)(n-1)+n-1}{2}-\frac{(n+1)(n-1)}{2} \\
-	&= \frac{1}{2}(n-1) \qquad (2 \nmid n) \numberthis\label{eq:offen}
+	r &= \frac{1}{2}(n-1) \qquad (2 \nmid n) \numberthis\label{eq:offen}
 \end{align*}
 Für eine Mauer ungeraden $n$ ohne Überschneidungen müssen mindestens $r = \frac{1}{2}(n-1)$ Spalten offen bleiben.
-\section{Backtrakcing}
+\section{Algorithmus}
+\label{sec:algorithmus}
 \subsection{Vorbetrachtung}
+\label{subsec:vorbetrachtung}
 Das Problem wird mit Backtracking gelöst. Es wird davon ausgegangen, dass die nach der oberen Schranke (\ref{eq:schranke}) gegebene größtmögliche Höhe $h = h_{max}$ immer erreichbar ist. Um eine Mauer $n$ zu lösen, wird von einer leeren Mauer der Dimensionen $w \times h$ ausgegangen. Ziel des Backtracking ist es, diese Mauer Stein für Stein zu füllen, ohne dass sich Fugen überschneiden.
 
 Eine Mauer $W = \left\{ R_1,\ \dots,\ R_h \right\}$ besteht aus $h$ Reihen $R$. Während der Konstruktion der Mauer sind die Reihen nur teilweise gefüllt. Eine Reihe $R = \left\{ b_1,\ \dots,\ b_k \right\}$ enthält $k \leq n$ Steine einer bestimmten Länge $b$. Ein Stein $b_i$ ist der $i$-te Stein von links innerhalb der Reihe. Nur die Steine $\Sigma = \left\{ 1,\ \dots,\ n \right\}$ können in einer Reihe $R \subseteq \Sigma$ enthalten sein.
 
 Jede Reihe $R$ besitzt eine Länge $\ell(R)$. Diese Länge ergibt sich aus der Summe aller in $R$ enthaltenen Steinlängen.
-\begin{equation}
+\begin{equation}\label{eq:laenge}
 	\ell(R) = \sum_{b_i \in R} b_i
 \end{equation}
 Die Reihe endet in der $\ell$-ten Spalte. Diese Spalte wird als \emph{Endpunkt} der Reihe bezeichnet.
@@ -168,7 +176,7 @@ Soll eine Reihe $R$ zu der Spalte $s$ erweitert werden, muss ein Stein bestimmte
 \begin{equation}\label{eq:bprime}
 	b' = s-\ell(R) \qquad (b' \in \Sigma \backslash R)
 \end{equation}
-Nach Anfügen des Steins hat sich in der $R$ die Anzahl $k$ von Steinen um eins erhöht und die Länge um $b'$ vergrößert. Da die Lücke $s$ nun durch eine Fuge gefüllt ist, wird als nächstes die darauf folgende Spalte $s+1$ gefüllt. Dieser Vorgang wird als \emph{Schritt} bezeichnet.
+Nach Anfügen des Steins hat sich in der $R$ die Anzahl $k$ von Steinen um eins erhöht und die Länge um $b'$ vergrößert. Da die Spalte $s$ nun durch eine Fuge gefüllt ist, wird als nächstes die darauf folgende Spalte $s+1$ gefüllt. Dieser Vorgang wird als \emph{Schritt} bezeichnet.
 \begin{align}\label{eq:trans}
 	R' &= R\,\cup\,\{b'\} & \ell' &= \ell + b' & s' &= s+1
 \end{align}
@@ -210,7 +218,7 @@ Um das Backtracking auf alle Fälle zu erweitern, wird die Möglichkeit hinzugef
 Ist es auch nicht möglich, die Spalte $s+1$ zu füllen, so wird diese ebenfalls übersprungen. Es ist demnach möglich, auch mehrere Spalten in einem Schritt zu überspringen. Sei $z$ die Anzahl von übersprungenen Spalten in einem Schritt.
 
 Während des Backtrackings soll $r$ die Anzahl von Spalten darstellen, die noch übersprungen werden können. Anfänglich ist $r$ die durch Gleichung (\ref{eq:offen}) gegebene Insgesamtanzahl, insofern $n$ ungerade ist. Handelt es sich um einen geraden Fall, so dürfen keine Spalten übersprungen werden, womit $r=0$.
-\begin{equation}
+\begin{equation}\label{eq:sprung}
 	r =
 	\begin{cases}
 		0 &\qquad (2 \mid n)\\
@@ -224,6 +232,7 @@ Wurden $z$ Spalten übersprungen, so verringert sich $r$ um diese Zahl. Es könn
 \end{gather}
 Ein Schritt setzt sich nun zusammen aus einer Reihe $R \in W$ und einer Anzahl von Sprüngen $z \in Z$ mit $Z = \left\{ 0,\ \dots,\ r \right\}$. Die Menge aller Folgeschritte ist die Menge von allen Kombinationen $W \times Z$. Dazu werden die Iterationen über die Reihen und über die Sprunglängen geschachtelt. Die äußere Iteration geht über $z$ aufsteigend. Es werden demnach immer zuerst die Möglichkeiten mit der geringsten Anzahl von Sprüngen betrachtet. Für den erweiterten Algorithmus siehe Anhang (\ref{alg:all}).
 \subsection{Suchheuristik}
+\label{subsec:heuristik}
 Mit dem Backtracking wird ein Suchbaum abgelaufen. Jeder Knoten in diesem Baum stellt einen Füllzustand der Wand dar, während ein Schritt von einem Zustand zum nächsten eine Kante ist. Ist kein Schritt von einem Knoten aus mehr möglich, so handelt es sich um eine \emph{Sackgasse}. Ist die Mauer vollständig gefüllt, so ist der zugehörige Zustands-Knoten eine \emph{Lösung}. Alle Blätter des Baums sind entweder Sackgassen oder Lösungen.
 \begin{figure}[H]
 	\centering
@@ -384,7 +393,7 @@ Durch Ordnung nach aufsteigender Länge werden immer zuerst die kürzesten Reihe
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}[scale=.5]
-		\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;
+		\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;  % phantom
 		\node at (6, -1) {(a)};
 		\draw[very thick]
 			(0, 0) rectangle ++(5, 1)
@@ -400,7 +409,7 @@ Durch Ordnung nach aufsteigender Länge werden immer zuerst die kürzesten Reihe
 			(0, 0) -- (12, 0);
 	\end{tikzpicture}
 	\begin{tikzpicture}[scale=.5]
-		\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;
+		\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;  % phantom
 		\node at (6, -1) {(b)};
 		\draw[very thick]
 			(0, 0) rectangle ++(5, 1)
@@ -417,7 +426,7 @@ Durch Ordnung nach aufsteigender Länge werden immer zuerst die kürzesten Reihe
 		\draw[very thick, gray] (7.2, 2.2) rectangle ++(3, 1);
 	\end{tikzpicture}
 	\begin{tikzpicture}[scale=.5]
-		\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;
+		\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;  % phantom
 		\node at (6, -1) {(c)};
 		\draw[very thick, opacity=.2, dashed]
 			(0, 0) rectangle ++(5, 1)
@@ -437,7 +446,7 @@ Durch Ordnung nach aufsteigender Länge werden immer zuerst die kürzesten Reihe
 		\path[-{latex}, very thick] (-.2, 2.5) edge[bend right=40] (-.2, -.5);
 	\end{tikzpicture}
 	\begin{tikzpicture}[scale=.5]
-		\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;
+		\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;  % phantom
 		\node at (6, -1) {(d)};
 		\draw[very thick]
 			(0, 0) rectangle ++(1, 1)
@@ -457,6 +466,109 @@ Durch Ordnung nach aufsteigender Länge werden immer zuerst die kürzesten Reihe
 \end{figure}
 Das Anfügen eines Steins verlängert die gewählte Reihe. Da bis zu einer bisher ungefüllten Spalte aufgefüllt wird, ist die Reihe nach Auffüllen die längste Reihe der Mauer. Demnach rutscht die gewählte Reihe immer an das Ende der Ordnung. Die Reihenfolge der restlichen Reihen bleibt erhalten. War ein Schritt nicht erfolgreich, müssen die unternommenen Veränderungen für das Backtracking rückgängig gemacht werden. Die gewählte Reihe muss demnach wieder an die vorherige Position in der Ordnung gesetzt werden.
 \newpage
+\section{Implementation}
+\subsection{Datenstrukturen}
+Der in Sektion (\ref{sec:algorithmus}) beschriebene Algorithmus greift auf abstrakte Datenstrukturen wie Mengen zurück. Eine Mauer wird in jedem Zustand während der Suche durch folgende Eigenschaften charakterisiert:
+\begin{enumerate}
+	\itemsep-2pt
+	\item die gegebene Zahl $n$
+	\item eine Breite $w$ \see{eq:width}
+	\item eine maximale Höhe $h$ \hfill \emph{siehe} (\ref{eq:evenheight}, \ref{eq:oddheight})
+	\item die Anzahl von noch möglichen Sprüngen $r$ \see{eq:sprung}
+	\item die zu füllende Spalte $s$
+	\item eine Menge $W$ von Reihen $R$ mit
+	\begin{enumerate}
+		\item allen beinhalteten Steinen $b$ als Element
+		\item einer bestimmten Länge $\ell(R)$ \see{eq:laenge}
+	\end{enumerate}
+	\item einer Reihenfolge für Reihen in $W$  \emph{siehe} Sektion (\ref{subsec:heuristik})
+\end{enumerate}
+Die Eigenschaften (1) bis (5) sind als natürliche Zahlen darstellbar. Die Reihe $R$ muss innerhalb der Suche drei Operationen mit einem Stein $b$ unterstützen: Einfügen, Entfernen und Test nach Beinhaltung.
+\begin{align*}
+ 	R &\leftarrow R\cup\{b\} & R &\leftarrow R\backslash\{b\} & (b &\in R)
+\end{align*}
+Als Datenstruktur wird für jede Reihe ein boolsches Array $usedBricks[n]$ verwendet. Das $i$-te Element $usedBricks[i]$ sagt dabei aus, ob der Stein der Länge $b=i+1$ enthalten ist. Das Hinzufügen beziehungsweise Entfernen wird durch die Änderung des Wertes des jeweiligen Elements erzielt. Alle Operationen benötigen dabei eine Laufzeitkomplexität von $\mathcal{O}(1)$.
+\begin{figure}[H]
+	\centering
+	\begin{tabular}{rcc}
+		Operation & \hspace{1cm} Menge $R$ \hspace{1cm} & Array $usedBricks$ \\
+		\hline\\
+		Einfügen & $R \leftarrow R\cup\{b\}$ & $usedBricks[b-1] \leftarrow 1$ \\\\
+		Entfernen & $R \leftarrow R\backslash\{b\}$ & $usedBricks[b-1] \leftarrow 0$ \\\\
+		Beinhaltung & $(b \in R)$ & $(usedBricks[b-1])$
+	\end{tabular}
+\end{figure}
+Alle boolschen Arrays werden in einem Array $wall[h]$ zusammengefasst. Der entsprechende Index innerhalb von $wall[\,]$ identifiziert jede Reihe eindeutig und ist unveränderlich.
+
+Durch die eindeutige Zuordnung jeder Reihe mit einem Index kann die in Sektion (\ref{subsec:heuristik}) beschriebene Reihenfolge durch eine Liste $order[h]$ ausgedrückt werden. Der Wert jedes Elements $order[i]$ entspricht dem Index der $i-ten$ Reihe innerhalb der Reihenfolge. Die kürzeste Reihe liegt in $order[0]$.
+
+Da die Ordnung veränderlich ist, ist eine dynamische Datenstruktur angebracht. Diese muss effizient folgende Operationen implementieren:
+\begin{enumerate}
+	\itemsep-2pt
+	\item Einfügen eines Elements $d$
+	\item Entfernen eines Elements $d$
+	\item Anfügen eines Elements $d$ am Ende
+	\item Entfernen des letzten Elements
+	\item Iteration durch alle Elemente
+\end{enumerate}
+Es werden Double-Linked-Lists verwendet, welche alle genannten Operationen (bis auf Iteration) in $\mathcal{O}(1)$ ermöglichen. Das Einfügen an einem bestimmten Index benötigt eigentlich $\mathcal{O}(n)$, da die Liste erst durchgegangen werden muss.
+
+Die Reihenfolge wird am Anfang und Ende von jedem Schritt verändert. Dabei wird die aktuelle Reihe innerhalb der Iteration an das Ende gesetzt, und wieder an die ursprüngliche Position zurück. Dabei ist immer der Zeiger der Reihe innerhalb der Iteration (\textsf{R}) und der Zeiger auf das Ende der Reihenfolge (\textsf{E}) bekannt. Es können demnach statt den Indices auch die Zeiger auf die Elemente verwendet werden, was eine lineare Suche erübrigt.
+\begin{figure}[H]
+	\centering
+	\large\sffamily
+	\tikzstyle{box}=[draw, thick, rectangle, inner sep=0pt, minimum width=1cm, minimum height=1cm, anchor=south west]
+	\begin{tikzpicture}
+		\draw (-1.2, -1.2) rectangle (6.2, 2.2);
+		\node at (-.6, 1.6) {\small(a)};
+		\node[box] at (0, 0) {2};
+		\node[box] at (1, 0) {1};
+		\node[box] at (2, .1) {4};
+		\node[box] at (3, 0) {5};
+		\node[box] at (4, 0) {3};
+		\node[box, opacity=.2] at (5, 0) {4};
+		\draw[thick] (2.5, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {R};
+		\draw[thick] (4.5, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {E};
+		\draw[thick, opacity=.2] (5.5, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {E};
+		\path[-{latex}, ultra thick] (2.5, 1.2) edge[bend left=50] (5.5, 1.1);
+	\end{tikzpicture}
+	\begin{tikzpicture}
+		\draw (-1.2, -1.2) rectangle (6.2, 2.2);
+		\node at (-.6, 1.6) {\small(b)};
+		\node[box] at (0, 0) {2};
+		\node[box] at (1, 0) {1};
+		\node[box] at (2, 0) {5};
+		\node[box] at (3, 0) {3};
+		\node[box] at (4, 0) {4};
+		\draw[thick] (2.5, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {R};
+		\draw[thick] (4.5, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {E};
+	\end{tikzpicture}\par\vspace{1mm}%
+	\begin{tikzpicture}
+		\draw (-1.2, -1.2) rectangle (6.2, 2.2);
+		\node at (-.6, 1.6) {\small(c)};
+		\node[box] at (0, 0) {2};
+		\node[box] at (1, 0) {1};
+		\node[box] at (2.2, 0) {5};
+		\node[box] at (3.2, 0) {3};
+		\node[box] at (4.2, 0.1) {4};
+		\draw[thick] (2.7, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {R};
+		\draw[thick] (4.7, .1) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {E};
+		\path[-{latex}, ultra thick] (4.7, 1.2) edge[bend right=50] (2.1, 1.1);
+	\end{tikzpicture}
+	\begin{tikzpicture}
+		\draw (-1.2, -1.2) rectangle (6.2, 2.2);
+		\node at (-.6, 1.6) {\small(d)};
+		\node[box] at (0, 0) {2};
+		\node[box] at (1, 0) {1};
+		\node[box] at (2, 0) {4};
+		\node[box] at (3, 0) {5};
+		\node[box] at (4, 0) {3};
+		\draw[thick] (2.5, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {R};
+		\draw[thick] (4.5, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {E};
+	\end{tikzpicture}
+	\caption{Zeiger in der Linked-List während eines Schrittes}
+\end{figure}
+\newpage
 \section{Anhang}
 \begin{algorithm}[H]
 	\DontPrintSemicolon
@@ -464,8 +576,8 @@ Das Anfügen eines Steins verlängert die gewählte Reihe. Da bis zu einer bishe
 	\KwResult{solved $W$ \tcp*[f]{vollständige Mauer ohne Überschneidungen}}\;
 	\SetKwFunction{FMain}{putStone}
 	\SetKwProg{Fn}{def}{:}{}
-	$h \leftarrow \frac{1}{2}n + 1$\Comment*[f]{Gl.(\ref{eq:width})[TODO INDENTS]}\; \vspace{3pt}
-	$w \leftarrow \frac{1}{2}n(n+1)$\Comment*[f]{Gl. (\ref{eq:height})}\;
+	$h \leftarrow \frac{1}{2}n + 1$\Comment*[f]{Gl.(\ref{eq:evenheight})}\; \vspace{3pt}
+	$w \leftarrow \frac{1}{2}n(n+1)$\Comment*[f]{Gl. (\ref{eq:width})}\;
 	$W \leftarrow \left\{ \emptyset \right\}^h$\;
 	$s \leftarrow 1$\;
 	\Fn(\tcp*[f]{Rekursive Funktion}){\FMain{$R,\ b$}}{
@@ -501,8 +613,8 @@ Das Anfügen eines Steins verlängert die gewählte Reihe. Da bis zu einer bishe
 	\KwResult{solved $W$ \tcp*[f]{vollständige Mauer ohne Überschneidungen}}\;
 	\SetKwFunction{FMain}{putStone}
 	\SetKwProg{Fn}{def}{:}{}
-	$h \leftarrow \left\lfloor\frac{1}{2}n\right\rfloor + 1$\Comment*[f]{Gl.(\ref{eq:width})[TODO INDENTS]}\;\vspace{3pt}
-	$w \leftarrow \frac{1}{2}n(n+1)$\Comment*[f]{Gl. (\ref{eq:height})}\;
+	$h \leftarrow \left\lfloor\frac{1}{2}n\right\rfloor + 1$\Comment*[f]{Gl.(\ref{eq:evenheight}, \ref{eq:oddheight})[TODO INDENTS]}\;\vspace{3pt}
+	$w \leftarrow \frac{1}{2}n(n+1)$\Comment*[f]{Gl. (\ref{eq:width})}\;
 	$W \leftarrow \left\{ \emptyset \right\}^h$\;
 	\eIf{$2 \mid n$}{
 		$r \leftarrow 0$\;
