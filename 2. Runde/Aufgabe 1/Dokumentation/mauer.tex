@@ -82,7 +82,7 @@ Eine Mauer der Breite $w$ besitzt $w-1$ Spalten, da die erste Spalte Distanz $1$
 % \newpage
 Hat eine Mauer keine sich überschneidenden Fugen, so kann jede Spalte von maximal einer Fuge belegt sein. Mit jeder hinzukommenden Reihe werden $n-1$ unbelegte Spalten mit Fugen besetzt. Ist es nicht mehr möglich, eine Reihe hinzuzufügen, ohne dass eine Überschneidung entsteht, ist die höchst mögliche Mauer erreicht. Diese maximale Höhe ergibt sich somit aus dem Quotienten aus der Anzahl aller Spalten und der Anzahl von Fugen pro Reihe.
 \begin{align*}
-	h(n-1) &\le w-1 \\
+	h(n-1) &\le w-1 \numberthis\label{eq:hansatz}\\
 	&\le \frac{1}{2}n(n+1) -1 \\
 	h &\le \frac{\frac{1}{2}\,n(n+1)-1}{n-1} = \frac{\frac{1}{2}\,n(n-1)+n-1}{n-1} \\
 	h &\le \frac{1}{2}n + 1 \numberthis\label{eq:schranke}
@@ -127,39 +127,26 @@ Jede Reihe $R$ besitzt eine Länge $\ell(R)$. Diese Länge ergibt sich aus der S
 	\ell(R) = \sum_{b_i \in R} b_i
 \end{equation}
 Die Reihe endet in der $\ell$-ten Spalte. Diese Spalte wird als \emph{Endpunkt} der Reihe bezeichnet.
-% Eine Reihe besitzt $k-1$ Fugen. Die Spalte $f_i$ der $i$-ten Fuge von links in einer Reihe $R$ entspricht der Teilsumme aller Steine bis dorthin.
-% \begin{equation}
-	% f_i = \sum_{j=1}^i b_j \qquad i < k
-% \end{equation}
-% Alle von Fugen durch eine Reihe $R$ besetzten Spalten sind in $F(R) = \left\{ f_1,\ \dots,\ f_{k-1} \right\}$ zusammengefasst.
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}[scale=1.1]
 		\draw[gray, dashed]
 			(0, -1) rectangle ++(2, -1)
 			(2, -1) rectangle ++(3, -1)
-			% (0, -2) rectangle ++(4, -1)
 			(4, -2) rectangle ++(2, -1)
 			(0,  0) rectangle ++(10, -3);
 		\draw[very thick]
 			(0, 0) rectangle ++(1, -1)
 			(1, 0) rectangle ++(2, -1)
 			(3, 0) rectangle ++(4, -1);
-
 		\node at (-.5, -.5) {$R_1$};
 		\node[gray] at (-.5, -1.5) {$R_2$};
 		\node[gray] at (-.5, -2.5) {$R_3$};
-
 		\node at (.5, -.5)  {{\small$b_1=1$}};
 		\node at (2, -.5)   {{\small$b_2=2$}};
 		\node at (5, -.5) {{\small$b_3=4$}};
-
 		\draw[|-|, very thick] (0, -1.3) to (7, -1.3) node[right] {$\ell = 7$};
-
 		\node at (8, -.5) {$k = 3$};
-
-		% \draw[thick, -{latex}] (1, .5) node[anchor=south] {$f_1=1$} to (1, .1);
-		% \draw[thick, -{latex}] (3, .5) node[anchor=south] {$f_2=3$} to (3, .1);
 	\end{tikzpicture}
 	\caption{Bezeichnungen}
 \end{figure}
@@ -277,79 +264,7 @@ Mit dem Backtracking wird ein Suchbaum abgelaufen. Jeder Knoten in diesem Baum s
 \end{figure}
 Das Backtracking geht den gesamten Baum ab, bis eine Lösung gefunden wurde. Die Größe des Baums, der bis zur ersten gefundenen Lösung betrachtet werden musste, ist maßgebend für die Laufzeit der Suche. Dabei ist die Reihenfolge entscheidend, in der die einzelnen Möglichkeiten abgelaufen werden.
 \par
-\begin{minipage}{.45\textwidth}
-	\begin{figure}[H]
-		\begin{tikzpicture}[scale=.75, x=9mm, y=8mm]
-			\def\checkmark{\tikz\fill[x=4mm, y=4mm](0, .35) -- (.25, 0) -- (.6, .7) -- (.25, .15) -- cycle;} 
-			\tikzstyle{node}=[draw, thick, circle, inner sep=0pt, minimum width=5mm]
-			\large
-			\node[node] (a) at (0, 6) {};
-			\node[node] (b1) at (-4, 4) {};
-			\node[node] (b2) at (0, 4) {};
-			\node[node, opacity=.2] (b3) at (4, 4) {};
-			\node[node] (c11) at (-5, 2) {};
-			\node[node] (c12) at (-4, 2) {};
-			\node[node] (c13) at (-3, 2) {$\times$};
-			\node[node] (c22) at (0, 2) {};
-			\node[node, opacity=.2] (c23) at (1, 2) {$\times$};
-			\node[node, opacity=.2] (c33) at (4, 2) {$\times$};
-			\node[node] (d111) at (-7, 0) {$\times$};
-			\node[node] (d112) at (-6, 0) {$\times$};
-			\node[node] (d113) at (-5, 0) {$\times$};
-			\node[node] (d122) at (-4, 0) {$\times$};
-			\node[node] (d221) at (-1, 0) {$\times$};
-			\node[node] (d222) at (0, 0) {\checkmark};
-			\draw[-{latex}, thick] (a) edge (b1) (a) edge (b2) (a) edge[opacity=.2] (b3)
-			                 (b1) edge (c11) (b1) edge (c12) (b1) edge (c13)
-			                 (b2) edge (c22) (b2) edge[opacity=.2] (c23)
-			                 (b3) edge[opacity=.2] (c33)
-			                 (c11) edge (d111) (c11) edge (d112) (c11) edge (d113)
-			                 (c12) edge (d122)
-			                 (c22) edge (d221) (c22) edge (d222);
-		\end{tikzpicture}
-		\caption{Betrachteter Teilbaum von links nach rechts}
-	\end{figure}
-\end{minipage}
-\hfill
-\begin{minipage}{.45\textwidth}
-	\begin{figure}[H]
-		\begin{tikzpicture}[scale=.75, x=9mm, y=8mm]
-			\def\checkmark{\tikz\fill[x=4mm, y=4mm](0, .35) -- (.25, 0) -- (.6, .7) -- (.25, .15) -- cycle;} 
-			\tikzstyle{node}=[draw, thick, circle, inner sep=0pt, minimum width=5mm]
-			\tikzstyle{node_}=[draw, thick, circle, inner sep=0pt, minimum width=5mm, opacity=.2]
-			\large
-			\node[node] (a) at (0, 6) {};
-			\node[node_] (b1) at (-4, 4) {};
-			\node[node] (b2) at (0, 4) {};
-			\node[node] (b3) at (4, 4) {};
-			\node[node_] (c11) at (-5, 2) {};
-			\node[node_] (c12) at (-4, 2) {};
-			\node[node_] (c13) at (-3, 2) {$\times$};
-			\node[node] (c22) at (0, 2) {};
-			\node[node] (c23) at (1, 2) {$\times$};
-			\node[node] (c33) at (4, 2) {$\times$};
-			\node[node_] (d111) at (-7, 0) {$\times$};
-			\node[node_] (d112) at (-6, 0) {$\times$};
-			\node[node_] (d113) at (-5, 0) {$\times$};
-			\node[node_] (d122) at (-4, 0) {$\times$};
-			\node[node_] (d221) at (-1, 0) {$\times$};
-			\node[node] (d222) at (0, 0) {\checkmark};
-			\draw[-{latex}, thick, opacity=.2] (a) edge (b1)  
-			                 (b1) edge (c11) (b1) edge (c12) (b1) edge (c13)
-			                 (c11) edge (d111) (c11) edge (d112) (c11) edge (d113)
-			                 (c12) edge (d122)
-			                 (c22) edge (d221);
-			\draw[-{latex}, thick]
-			                 (a) edge (b2)
-			                 (a) edge (b3)
-			                 (b2) edge (c22)
-			                 (b2) edge (c23)
-			                 (b3) edge (c33)
-			                 (c22) edge (d222);
-		\end{tikzpicture}
-		\caption{Betrachteter Teilbaum von rechts nach links}
-	\end{figure}
-\end{minipage}
+\input{figBaeume}
 \\\\\\
 Um die Laufzeit der Suche zu verringern, wird eine Suchheuristik angewendet, welche die Reihenfolge der betrachteten Möglichkeiten beeinflusst. Eine solche Heuristik sollte die Schritte zuerst wählen, die eine höhere Wahrscheinlichkeit haben, zielführend zu sein. So verringert sich die durchschnittliche Größe des betrachtenten Teilbaums. Ausschlaggebend für diese Größe ist unter Anderem die Anzahl von vorgekommenen Kollisionen.
 \\\\
@@ -371,19 +286,6 @@ Werden die Fugen anfänglich nur oben gesetzt, so können untere Reihen sogar so
 		                  (6, 3) rectangle ++(4, 1)
 		                  (0, 0) -- (0, 4) -- (15, 4)
 		                  (0, 0) -- (15, 0);
-		% \path[{latex}-, dashed, thick](1, -0.5) edge (1, 3)
-		                     % (2, -0.7) edge (2, 2)
-		                     % (3, -0.9) edge (3, 3)
-		                     % (4, -1.1) edge (4, 1)
-		                     % (5, -1.3) edge (5, 2)
-		                     % (6, -1.5) edge (6, 3);
-		% \draw[ultra thick, gray, fill=white] (0, -1.5) rectangle ++(6, -1);
-		% \draw[ultra thick, gray, fill=white] (0, -1.3) rectangle ++(5, -1);
-		% \draw[ultra thick, gray, fill=white] (0, -1.1) rectangle ++(4, -1);
-		% \draw[ultra thick, gray, fill=white] (0, -0.9) rectangle ++(3, -1);
-		% \draw[ultra thick, gray, fill=white] (0, -0.7) rectangle ++(2, -1);
-		% \draw[ultra thick, gray, fill=white] (0, -0.5) rectangle ++(1, -1);
-
 		\draw[dashed, very thick] (11, -.25) -- (11, 4.25);
 	\end{tikzpicture}
 	\caption{erste Sackgasse im Backtracking für $n=6$}\label{fig:sackgasse}
@@ -400,77 +302,7 @@ Die gewählte Heuristik wirkt diesen Effekten entgegen.
 \end{framed}
 Durch Ordnung nach aufsteigender Länge werden immer zuerst die kürzesten Reihen betrachtet. So bleibt die Längenverteilung innerhalb der Reihen gleichmäßig, da keine Reihe zurückfallen kann.
 \begin{figure}[H]
-	\centering
-	\begin{tikzpicture}[scale=.5]
-		\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;  % phantom
-		\node at (6, -1) {(a)};
-		\draw[very thick]
-			(0, 0) rectangle ++(5, 1)
-			(5, 0) rectangle ++(4, 1)
-			(0, 1) rectangle ++(2, 1)
-			(2, 1) rectangle ++(6, 1)
-			(0, 2) rectangle ++(1, 1)
-			(1, 2) rectangle ++(2, 1)
-			(3, 2) rectangle ++(4, 1)
-			(0, 3) rectangle ++(4, 1)
-			(4, 3) rectangle ++(2, 1)
-			(0, 0) -- (0, 4) -- (12, 4)
-			(0, 0) -- (12, 0);
-	\end{tikzpicture}
-	\begin{tikzpicture}[scale=.5]
-		\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;  % phantom
-		\node at (6, -1) {(b)};
-		\draw[very thick]
-			(0, 0) rectangle ++(5, 1)
-			(5, 0) rectangle ++(4, 1)
-			(0, 1) rectangle ++(2, 1)
-			(2, 1) rectangle ++(6, 1)
-			(0, 2) rectangle ++(1, 1)
-			(1, 2) rectangle ++(2, 1)
-			(3, 2) rectangle ++(4, 1)
-			(0, 3) rectangle ++(4, 1)
-			(4, 3) rectangle ++(2, 1)
-			(0, 0) -- (0, 4) -- (12, 4)
-			(0, 0) -- (12, 0);
-		\draw[very thick, gray] (7.2, 2.2) rectangle ++(3, 1);
-	\end{tikzpicture}
-	\begin{tikzpicture}[scale=.5]
-		\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;  % phantom
-		\node at (6, -1) {(c)};
-		\draw[very thick, opacity=.2, dashed]
-			(0, 0) rectangle ++(5, 1)
-			(5, 0) rectangle ++(4, 1)
-			(0, 1) rectangle ++(2, 1)
-			(2, 1) rectangle ++(6, 1)
-			(0, 2) rectangle ++(1, 1)
-			(1, 2) rectangle ++(2, 1)
-			(3, 2) rectangle ++(4, 1)
-			(0, 3) rectangle ++(4, 1)
-			(4, 3) rectangle ++(2, 1);
-		\draw[very thick]
-			(0, 2) rectangle ++(1, 1)
-			(1, 2) rectangle ++(2, 1)
-			(3, 2) rectangle ++(4, 1)
-			(7, 2) rectangle ++(3, 1);
-		\path[-{latex}, very thick] (-.2, 2.5) edge[bend right=40] (-.2, -.5);
-	\end{tikzpicture}
-	\begin{tikzpicture}[scale=.5]
-		\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;  % phantom
-		\node at (6, -1) {(d)};
-		\draw[very thick]
-			(0, 0) rectangle ++(1, 1)
-			(1, 0) rectangle ++(2, 1)
-			(3, 0) rectangle ++(4, 1)
-			(7, 0) rectangle ++(3, 1)
-			(0, 1) rectangle ++(5, 1)
-			(5, 1) rectangle ++(4, 1)
-			(0, 2) rectangle ++(2, 1)
-			(2, 2) rectangle ++(6, 1)
-			(0, 3) rectangle ++(4, 1)
-			(4, 3) rectangle ++(2, 1)
-			(0, 0) -- (0, 4) -- (12, 4)
-			(0, 0) -- (12, 0);
-	\end{tikzpicture}
+	\input{figOrdnung}
 	\caption{Umordnung nach Anfügen eines Steins}
 \end{figure}
 Das Anfügen eines Steins verlängert die gewählte Reihe. Da bis zu einer bisher ungefüllten Spalte aufgefüllt wird, ist die Reihe nach Auffüllen die längste Reihe der Mauer. Demnach rutscht die gewählte Reihe immer an das Ende der Ordnung. Die Reihenfolge der restlichen Reihen bleibt erhalten. War ein Schritt nicht erfolgreich, müssen die unternommenen Veränderungen für das Backtracking rückgängig gemacht werden. Die gewählte Reihe muss demnach wieder an die vorherige Position in der Ordnung gesetzt werden.
@@ -528,57 +360,7 @@ Es werden Double-Linked-Lists verwendet, welche alle genannten Operationen (bis 
 
 Die Reihenfolge wird am Anfang und Ende von jedem Schritt verändert. Dabei wird die aktuelle Reihe innerhalb der Iteration an das Ende gesetzt, und wieder an die ursprüngliche Position zurück. Dabei ist immer der Zeiger der Reihe innerhalb der Iteration (\textsf{R}) und der Zeiger auf das Ende der Reihenfolge (\textsf{E}) bekannt. Es können demnach statt den Indices auch die Zeiger auf die Elemente verwendet werden, was eine lineare Suche erübrigt.
 \begin{figure}[H]
-	\centering
-	\large\sffamily
-	\tikzstyle{box}=[draw, thick, rectangle, inner sep=0pt, minimum width=1cm, minimum height=1cm, anchor=south west]
-	\begin{tikzpicture}
-		\draw (-1.2, -1.2) rectangle (6.2, 2.2);
-		\node at (-.6, 1.6) {\small(a)};
-		\node[box] at (0, 0) {2};
-		\node[box] at (1, 0) {1};
-		\node[box] at (2, .1) {4};
-		\node[box] at (3, 0) {5};
-		\node[box] at (4, 0) {3};
-		\node[box, opacity=.2] at (5, 0) {4};
-		\draw[thick] (2.5, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {R};
-		\draw[thick] (4.5, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {E};
-		\draw[thick, opacity=.2] (5.5, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {E};
-		\path[-{latex}, ultra thick] (2.5, 1.2) edge[bend left=50] (5.5, 1.1);
-	\end{tikzpicture}
-	\begin{tikzpicture}
-		\draw (-1.2, -1.2) rectangle (6.2, 2.2);
-		\node at (-.6, 1.6) {\small(b)};
-		\node[box] at (0, 0) {2};
-		\node[box] at (1, 0) {1};
-		\node[box] at (2, 0) {5};
-		\node[box] at (3, 0) {3};
-		\node[box] at (4, 0) {4};
-		\draw[thick] (2.5, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {R};
-		\draw[thick] (4.5, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {E};
-	\end{tikzpicture}\par\vspace{1mm}%
-	\begin{tikzpicture}
-		\draw (-1.2, -1.2) rectangle (6.2, 2.2);
-		\node at (-.6, 1.6) {\small(c)};
-		\node[box] at (0, 0) {2};
-		\node[box] at (1, 0) {1};
-		\node[box] at (2.2, 0) {5};
-		\node[box] at (3.2, 0) {3};
-		\node[box] at (4.2, 0.1) {4};
-		\draw[thick] (2.7, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {R};
-		\draw[thick] (4.7, .1) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {E};
-		\path[-{latex}, ultra thick] (4.7, 1.2) edge[bend right=50] (2.1, 1.1);
-	\end{tikzpicture}
-	\begin{tikzpicture}
-		\draw (-1.2, -1.2) rectangle (6.2, 2.2);
-		\node at (-.6, 1.6) {\small(d)};
-		\node[box] at (0, 0) {2};
-		\node[box] at (1, 0) {1};
-		\node[box] at (2, 0) {4};
-		\node[box] at (3, 0) {5};
-		\node[box] at (4, 0) {3};
-		\draw[thick] (2.5, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {R};
-		\draw[thick] (4.5, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {E};
-	\end{tikzpicture}
+	\input{figLinkedlist}
 	\caption{Zeiger in der Linked-List während eines Schrittes}
 \end{figure}\vspace{-6pt}
 Die Längen $\ell(R)$ müssen nicht erst als Summe (\emph{siehe} \ref{eq:laenge}) der Steinlängen errechnet werden, da dies $\mathcal{O}(n)$ benötigen würde. Stattdessen werden die Längen in einem Array $endpoints[h]$ gespeichert, wobei $endpoints[i]$ die Länge $\ell(R)$ der Reihe mit Index $i$ darstellt. Am Anfang sind alle Reihen leer, sodass $endpoints$ mit 0 initialisiert wird. Wird ein Stein der Länge $b$ in der Reihe $R$ hinzugefügt oder entfernt, wird dies auf die Länge addiert beziehungsweise subtrahiert. Dies geschieht in $\mathcal{O}(1)$.
@@ -592,111 +374,20 @@ Die Längen $\ell(R)$ müssen nicht erst als Summe (\emph{siehe} \ref{eq:laenge}
 	\end{tabular}
 \end{figure}
 \section{Laufzeit}
-Die Laufzeit des Programms hängt von der Größe
+Die Laufzeit des Programms hängt von der Größe des betrachteten Suchbaums ab. Liegen die Lösungen ungünstig, kann im Worst-Case-Szenario die erste Lösung erst am Ende des Suchbaums gefunden werden. Das asymptotische Verhalten der Größe des gesamten Suchbaums gibt dabei eine Worst-Case-Laufzeit $\Omega(n)$.
+
+Die Anzahl von Kollisionen entspricht der Anzahl von Blättern, da keine Lösung enthalten ist. Wird davon ausgegangen, dass keine Suchzweige vorzeitig verworfen werden, entspricht dies der Anzahl von Kombinationen von Fugenpositionen in einer gefüllen Mauer. In einer Mauer sind $w-1$ Fugen enthalten, welche jeweils in einer von $h$ Reihen enthalten sind. Demnach gibt es $(w-1)^h$ Kombinationen. Die Höhe $h$ ergab sich in der Herleitung (\ref{eq:hansatz}) als Quotient aus Anzahl der Fugen $w-1$ und $n-1$ Fugen pro Reihe. Demnach ergibt sich
+\begin{align*}
+	(w-1)^h &= \left( h(n-1) \right)^h = \left( \left( \frac{1}{2}n+1 \right)(n-1)  \right)^h \\
+	\intertext{Für $n \rightarrow \infty$ folgt}
+	&\widehat{=} \left( \frac{1}{2}n^2 \right)^h = 2^{-h}n^{2h} = 2^{-h}n^{n+2}
+\end{align*}
+Es muss jedoch gar nicht der ganze Suchbaum durchsucht werden. Wenn eine Lösung existiert, so ist jede Permutation von Reihen dieser Lösung auch eine Lösung.
+\begin{figure}[H]
+	\input{figPermutationen}
+	\caption{Permutationen einer Lösung}
+\end{figure}
 \newpage
 \section{Anhang}
-\begin{figure}[H]
-	\centering
-	\begin{tikzpicture}[trim axis left, trim axis right]
-		\begin{axis}[
-				xlabel=$n$,
-				ylabel=$t\lbrack\si{\second}\rbrack$,
-				ymode=log,
-				xmin=1, xmax=18,
-				ymin=5e-6, ymax=1e4,
-				xtick=data,
-				width=\textwidth,
-				height=.5\textheight,
-		  	]
-			\addplot[black, thick, mark=none] table[x=n, y=slow] {runtimesFull.dat};
-			\addplot[black, thick, mark=none] table[x=n, y=fast] {runtimesFull.dat};
-			\sffamily\large
-			\node at (axis cs: 17, 10) {(a)};
-			\node at (axis cs: 10.5, 1e3) {(b)};
-		\end{axis}
-	\end{tikzpicture}
-	\caption{Laufzeit $t$ in Abh. von $n$ mit Heuristik \textsf{(a)} und ohne \textsf{(b)}}
-	\label{fig:laufzeit}
-\end{figure}
-\begin{algorithm}[H]
-	\DontPrintSemicolon
-	\KwData{$n$ \tcp*[f]{Eingabe für gerade $n$}}\;
-	\KwResult{solved $W$ \tcp*[f]{vollständige Mauer ohne Überschneidungen}}\;
-	\SetKwFunction{FMain}{putStone}
-	\SetKwProg{Fn}{def}{:}{}
-	$h \leftarrow \frac{1}{2}n + 1$\Comment*[f]{Gl.(\ref{eq:evenheight})}\; \vspace{3pt}
-	$w \leftarrow \frac{1}{2}n(n+1)$\Comment*[f]{Gl. (\ref{eq:width})}\;
-	$W \leftarrow \left\{ \emptyset \right\}^h$\;
-	$s \leftarrow 1$\;
-	\Fn(\tcp*[f]{Rekursive Funktion}){\FMain{$R,\ b$}}{
-		$s \leftarrow s + 1$\;
-		$\ell(R) \leftarrow \ell(R) + b$\;
-		$R \leftarrow R\,\cup\,\{b\}$\;
-		\If{$s = w$}{
-			\Return \textbf{True}\;
-		}
-		\For{$R'$ \KwTo $W$}{
-			$b' \leftarrow s - \ell(R')$\Comment*[f]{Gl. (\ref{eq:bprime})}\;
-			\If{$b' \notin R'$}{
-				\If{\FMain{$R',\ b'$}}{
-					\Return \textbf{True}\;
-				}
-			}
-		}
-		$s \leftarrow s - 1$\;
-		$R \leftarrow R\backslash\{b\}$\;
-		$\ell(R) \leftarrow \ell(R) - b$\;
-		\Return \textbf{False}\;
-		}
-		\BlankLine\;
-		\For{$R$ \KwTo $W$}{
-			\FMain{$R,\ 1$}\;
-		}
-	\caption{Backtracking für gerade $n$}\label{alg:even}
-\end{algorithm}
-\newpage
-\begin{algorithm}[H]
-	\DontPrintSemicolon
-	\KwData{$n$ \tcp*[f]{Eingabe für gerade $n$}}\;
-	\KwResult{solved $W$ \tcp*[f]{vollständige Mauer ohne Überschneidungen}}\;
-	\SetKwFunction{FMain}{putStone}
-	\SetKwProg{Fn}{def}{:}{}
-	$h \leftarrow \left\lfloor\frac{1}{2}n\right\rfloor + 1$\Comment*[f]{Gl.(\ref{eq:evenheight}, \ref{eq:oddheight})[TODO INDENTS]}\;\vspace{3pt}
-	$w \leftarrow \frac{1}{2}n(n+1)$\Comment*[f]{Gl. (\ref{eq:width})}\;
-	$W \leftarrow \left\{ \emptyset \right\}^h$\;
-	\eIf{$2 \mid n$}{
-		$r \leftarrow 0$\;
-	}{
-		$r \leftarrow \frac{1}{2}(n-1)$\;
-	}
-	$s \leftarrow 1$\;
-	\Fn(\tcp*[f]{Rekursive Funktion}){\FMain{$R,\ b,\ z$}}{
-		$s \leftarrow s + z + 1$\;
-		$\ell(R) \leftarrow \ell(R) + b$\;
-		$R \leftarrow R\,\cup\,\{b\}$\;
-		\If{$s+z = w$}{
-			\Return \textbf{True}\;
-		}
-		$r \leftarrow r - z$\;
-		$Z \leftarrow \left\{ 0,\ \dots,\ r \right\}$\;
-		\For{$(R',\ z')$ \KwTo $W \times Z$}{
-			$b' \leftarrow s + z' - \ell(R')$\Comment*[f]{Gl. (\ref{eq:bprime})}\;
-			\If{$b' \notin R'$}{
-				\If{\FMain{$R',\ b',\ z'$}}{
-					\Return \textbf{True}\;
-				}
-			}
-		}
-		$s \leftarrow s - 1$\;
-		$r \leftarrow r + z$\;
-		$R \leftarrow R\backslash\{b\}$\;
-		$\ell(R) \leftarrow \ell(R) - b$\;
-		\Return \textbf{False}\;
-		}
-		\BlankLine\;
-		\For{$R$ \KwTo $W$}{
-			\FMain{$R,\ 1,\ 0$}\;
-		}
-	\caption{Backtracking für alle $n$}\label{alg:all}
-\end{algorithm}
+\input{algorithms}
 \end{document}

@@ -1,0 +1,71 @@
+\centering
+\begin{tikzpicture}[scale=.5]
+	\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;  % phantom
+	\node at (6, -1) {(a)};
+	\draw[very thick]
+		(0, 0) rectangle ++(5, 1)
+		(5, 0) rectangle ++(4, 1)
+		(0, 1) rectangle ++(2, 1)
+		(2, 1) rectangle ++(6, 1)
+		(0, 2) rectangle ++(1, 1)
+		(1, 2) rectangle ++(2, 1)
+		(3, 2) rectangle ++(4, 1)
+		(0, 3) rectangle ++(4, 1)
+		(4, 3) rectangle ++(2, 1)
+		(0, 0) -- (0, 4) -- (12, 4)
+		(0, 0) -- (12, 0);
+\end{tikzpicture}
+\begin{tikzpicture}[scale=.5]
+	\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;  % phantom
+	\node at (6, -1) {(b)};
+	\draw[very thick]
+		(0, 0) rectangle ++(5, 1)
+		(5, 0) rectangle ++(4, 1)
+		(0, 1) rectangle ++(2, 1)
+		(2, 1) rectangle ++(6, 1)
+		(0, 2) rectangle ++(1, 1)
+		(1, 2) rectangle ++(2, 1)
+		(3, 2) rectangle ++(4, 1)
+		(0, 3) rectangle ++(4, 1)
+		(4, 3) rectangle ++(2, 1)
+		(0, 0) -- (0, 4) -- (12, 4)
+		(0, 0) -- (12, 0);
+	\draw[very thick, gray] (7.2, 2.2) rectangle ++(3, 1);
+\end{tikzpicture}
+\begin{tikzpicture}[scale=.5]
+	\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;  % phantom
+	\node at (6, -1) {(c)};
+	\draw[very thick, opacity=.2, dashed]
+		(0, 0) rectangle ++(5, 1)
+		(5, 0) rectangle ++(4, 1)
+		(0, 1) rectangle ++(2, 1)
+		(2, 1) rectangle ++(6, 1)
+		(0, 2) rectangle ++(1, 1)
+		(1, 2) rectangle ++(2, 1)
+		(3, 2) rectangle ++(4, 1)
+		(0, 3) rectangle ++(4, 1)
+		(4, 3) rectangle ++(2, 1);
+	\draw[very thick]
+		(0, 2) rectangle ++(1, 1)
+		(1, 2) rectangle ++(2, 1)
+		(3, 2) rectangle ++(4, 1)
+		(7, 2) rectangle ++(3, 1);
+	\path[-{latex}, very thick] (-.2, 2.5) edge[bend right=40] (-.2, -.5);
+\end{tikzpicture}
+\begin{tikzpicture}[scale=.5]
+	\path (-1, -1) to (13, -1) to (13, 5) to (-1, 5) to cycle;  % phantom
+	\node at (6, -1) {(d)};
+	\draw[very thick]
+		(0, 0) rectangle ++(1, 1)
+		(1, 0) rectangle ++(2, 1)
+		(3, 0) rectangle ++(4, 1)
+		(7, 0) rectangle ++(3, 1)
+		(0, 1) rectangle ++(5, 1)
+		(5, 1) rectangle ++(4, 1)
+		(0, 2) rectangle ++(2, 1)
+		(2, 2) rectangle ++(6, 1)
+		(0, 3) rectangle ++(4, 1)
+		(4, 3) rectangle ++(2, 1)
+		(0, 0) -- (0, 4) -- (12, 4)
+		(0, 0) -- (12, 0);
+\end{tikzpicture}
