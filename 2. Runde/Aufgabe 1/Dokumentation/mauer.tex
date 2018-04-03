@@ -139,9 +139,11 @@ Die Reihe endet in der $\ell$-ten Spalte. Diese Spalte wird als \emph{Endpunkt} 
 			(0, 0) rectangle ++(1, -1)
 			(1, 0) rectangle ++(2, -1)
 			(3, 0) rectangle ++(4, -1);
+
 		\node at (-.5, -.5) {$R_1$};
 		\node[gray] at (-.5, -1.5) {$R_2$};
 		\node[gray] at (-.5, -2.5) {$R_3$};
+
 		\node at (.5, -.5)  {{\small$b_1=1$}};
 		\node at (2, -.5)   {{\small$b_2=2$}};
 		\node at (5, -.5) {{\small$b_3=4$}};
@@ -306,10 +308,6 @@ Durch Ordnung nach aufsteigender Länge werden immer zuerst die kürzesten Reihe
 	\caption{Umordnung nach Anfügen eines Steins}
 \end{figure}
 Das Anfügen eines Steins verlängert die gewählte Reihe. Da bis zu einer bisher ungefüllten Spalte aufgefüllt wird, ist die Reihe nach Auffüllen die längste Reihe der Mauer. Demnach rutscht die gewählte Reihe immer an das Ende der Ordnung. Die Reihenfolge der restlichen Reihen bleibt erhalten. War ein Schritt nicht erfolgreich, müssen die unternommenen Veränderungen für das Backtracking rückgängig gemacht werden. Die gewählte Reihe muss demnach wieder an die vorherige Position in der Ordnung gesetzt werden.
-
-Die Heuristik ist ab $n=6$ deutlich schneller als der normale Algorithmus. Das hängt damit zusammen, dass die Listenoperationen zusätzlich Zeit kosten, welche erst bei größeren $n$ aufgeholt werden. Für $n=10$ benötigt die Heuristik \SI{1.1}{\milli\second}, was 4 Millionen mal schneller ist als der normale Algorithmus mit über einer Stunde. Der Algorithmus ohne Heuristik ist bis jetzt\footnote{und vermutlich auch in 1000 Jahren} immer noch nicht fertig mit $n=11$. Die Heuristik kommt bis $n=17$, wofür sie circa eine Minute braucht.
-
-Die Laufzeiten der einzelnen Algorithmen sind auch im Anhang Abbildung (\ref{fig:laufzeit}) in Abhängigkeit von $n$ dargestellt.
 \newpage
 \section{Implementation}
 \subsection{Datenstrukturen}
@@ -374,20 +372,71 @@ Die Längen $\ell(R)$ müssen nicht erst als Summe (\emph{siehe} \ref{eq:laenge}
 	\end{tabular}
 \end{figure}
 \section{Laufzeit}
-Die Laufzeit des Programms hängt von der Größe des betrachteten Suchbaums ab. Liegen die Lösungen ungünstig, kann im Worst-Case-Szenario die erste Lösung erst am Ende des Suchbaums gefunden werden. Das asymptotische Verhalten der Größe des gesamten Suchbaums gibt dabei eine Worst-Case-Laufzeit $\Omega(n)$.
+Die Laufzeit des Programms hängt von der Größe des betrachteten Suchbaums ab. Liegen die Lösungen ungünstig, kann im Worst-Case-Szenario die erste Lösung erst am Ende des Suchbaums gefunden werden. Das asymptotische Verhalten der Größe des gesamten Suchbaums gibt daher eine Worst-Case-Laufzeit
 
-Die Anzahl von Kollisionen entspricht der Anzahl von Blättern, da keine Lösung enthalten ist. Wird davon ausgegangen, dass keine Suchzweige vorzeitig verworfen werden, entspricht dies der Anzahl von Kombinationen von Fugenpositionen in einer gefüllen Mauer. In einer Mauer sind $w-1$ Fugen enthalten, welche jeweils in einer von $h$ Reihen enthalten sind. Demnach gibt es $(w-1)^h$ Kombinationen. Die Höhe $h$ ergab sich in der Herleitung (\ref{eq:hansatz}) als Quotient aus Anzahl der Fugen $w-1$ und $n-1$ Fugen pro Reihe. Demnach ergibt sich
+Die Anzahl von Kollisionen entspricht der Anzahl von Blättern, da keine Lösung enthalten ist. Wird davon ausgegangen, dass keine Suchzweige vorzeitig verworfen werden, entspricht dies der Anzahl von Kombinationen von Fugenpositionen in einer gefüllten Mauer. In einer Mauer sind $w-1$ Fugen enthalten, welche jeweils in einer von $h$ Reihen enthalten sind.\footnote{Es wird für den asymptotischen Fall von geraden $n$ ausgegangen. So wird für ungerade Fälle die Anzahl an Kombinationen überschätzt, was im Sinne der Laufzeitbetrachtung liegt.} Demnach gibt es $(w-1)^h$ Kombinationen. Die Höhe $h$ ergab sich in der Herleitung (\ref{eq:hansatz}) als Quotient aus Anzahl der Fugen $w-1$ und $n-1$ Fugen pro Reihe. Demnach ergibt sich
 \begin{align*}
-	(w-1)^h &= \left( h(n-1) \right)^h = \left( \left( \frac{1}{2}n+1 \right)(n-1)  \right)^h \\
+	(w-1)^h &= \left( h(n-1) \right)^h
 	\intertext{Für $n \rightarrow \infty$ folgt}
-	&\widehat{=} \left( \frac{1}{2}n^2 \right)^h = 2^{-h}n^{2h} = 2^{-h}n^{n+2}
+	&\widehat{=} \left( nh \right)^h
 \end{align*}
 Es muss jedoch gar nicht der ganze Suchbaum durchsucht werden. Wenn eine Lösung existiert, so ist jede Permutation von Reihen dieser Lösung auch eine Lösung.
+
 \begin{figure}[H]
-	\input{figPermutationen}
+	\sffamily\small
+	\begin{center}
+		\input{figPermutationen}
+	\end{center}
 	\caption{Permutationen einer Lösung}
 \end{figure}
+Da jede Spalte mindestens einmal auf jeder Reihe durch eine Fuge besetzt war, sind alle Permutationen im Suchbaum gleichmäßig verteilt. Eine Ungleichverteilung kommt nur zustande, wenn viele Lösungen die gleiche Spaltenbesetzung am Anfang aufweisen, da dies ausschlaggebend für die ungefähre Position des Suchzweigs im Baum ist. Ist die Besetzung verschieden, unterscheiden sich die Suchzweige.
+
+Da die $h!$ Permutationen gleichverteilt sind, muss schon im ersten $\frac{1}{h!}$ -ten Teil eine Lösung enthalten sein. Die Größe des zu betrachtenden Baums sink also auf
+\begin{equation*}
+	\frac{(nh)^h}{h!}
+\end{equation*}
+Da $h$ nach Gleichung (\ref{eq:evenheight}) proportional zu $n$ ist, kann für die asymptotische Betrachtung $h$ durch $n$ substituiert werden, da dies nur zu einer Streckung des Eingaberaums führt. Da $h < n$ ist dies im Sinne der Laufzeitbetrachtung. Es ergibt sich
+\begin{align*}
+	\mathcal{O} \left( \frac{(nh)^h}{h!} \right) &= \mathcal{O} \left( \frac{(n \cdot n)^{\frac{1}{2}n+1}}{n!} \right) = \mathcal{O} \left( \frac{n^{n+2}}{n!} \right) \\
+	\intertext{Nach der \textsc{Stirling}'schen Formel\cite{stirling} \qquad $\displaystyle n! \approx \left( \frac{n}{e} \right)^n \sqrt{\tau n} $}
+	&= \mathcal{O} \left( \frac{n^{n+2}}{n^ne^{-n}\sqrt{\tau n}} \right) = \mathcal{O} \left( n^2e^{-n}n^{-\frac{1}{2}} \right) \\
+	&= \mathcal{O} \left( n^{\frac{3}{2}}e^n \right) 
+\end{align*}
+Es handelt sich hier um die Worst-Case-Laufzeit, welche unabhängig von der Heuristik ist. In der Praxis können geringfügige Unterschiede im Aufbau des Suchbaums zu großen Laufzeitunterschieden führen.
+
+Die Heuristik ist ab $n=6$ deutlich schneller als der normale Algorithmus. Das hängt damit zusammen, dass die Listenoperationen zusätzlich Zeit kosten, welche erst bei größeren $n$ aufgeholt werden. Für $n=10$ benötigt die Heuristik \SI{1.1}{\milli\second}, was 4 Millionen mal schneller ist als der normale Algorithmus mit über einer Stunde. Der Algorithmus ohne Heuristik ist bis jetzt\footnote{und vermutlich auch in 1000 Jahren} immer noch nicht fertig mit $n=11$. Die Heuristik kommt bis $n=17$, wofür eine Minute gebraucht wird.\vspace*{-1em}
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[trim axis left, trim axis right]
+		\begin{axis}[
+				xlabel=$n$,
+				ylabel=$t\lbrack\si{\second}\rbrack$,
+				ymode=log,
+				xmin=1, xmax=18,
+				ymin=5e-6, ymax=1e4,
+				xtick=data,
+				width=\textwidth,
+				height=.4\textheight
+		  	]
+			\addplot[black, thick, mark=none] table[x=n, y=slow] {runtimesFull.dat};
+			\addplot[black, thick, mark=none] table[x=n, y=fast] {runtimesFull.dat};
+			\sffamily\large
+			\node at (axis cs: 17, 10) {(a)};
+			\node at (axis cs: 10.5, 1e3) {(b)};
+		\end{axis}
+	\end{tikzpicture}
+	\caption{Laufzeit $t$ in Abh. von $n$ mit Heuristik \textsf{(a)} und ohne \textsf{(b)}}
+	\label{fig:laufzeit}
+\end{figure}
+\enlargethispage{2em}
 \newpage
 \section{Anhang}
 \input{algorithms}
+
+\begin{thebibliography}{9}
+\bibitem{stirling}
+	Conrad, K, \textsc{Stirlings Formula},
+	\emph{University of Conneticut Math Department},\\
+	\href{http://www.math.uconn.edu/~kconrad/blurbs/analysis/stirling.pdf}{\url{http://www.math.uconn.edu/~kconrad/blurbs/analysis/stirling.pdf}}
+\end{thebibliography}
 \end{document}

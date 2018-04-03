@@ -1,27 +1,4 @@
-\begin{figure}[H]
-	\centering
-	\begin{tikzpicture}[trim axis left, trim axis right]
-		\begin{axis}[
-				xlabel=$n$,
-				ylabel=$t\lbrack\si{\second}\rbrack$,
-				ymode=log,
-				xmin=1, xmax=18,
-				ymin=5e-6, ymax=1e4,
-				xtick=data,
-				width=\textwidth,
-				height=.5\textheight,
-		  	]
-			\addplot[black, thick, mark=none] table[x=n, y=slow] {runtimesFull.dat};
-			\addplot[black, thick, mark=none] table[x=n, y=fast] {runtimesFull.dat};
-			\sffamily\large
-			\node at (axis cs: 17, 10) {(a)};
-			\node at (axis cs: 10.5, 1e3) {(b)};
-		\end{axis}
-	\end{tikzpicture}
-	\caption{Laufzeit $t$ in Abh. von $n$ mit Heuristik \textsf{(a)} und ohne \textsf{(b)}}
-	\label{fig:laufzeit}
-\end{figure}
-\begin{algorithm}[H]
+ \begin{algorithm}[H]
 	\DontPrintSemicolon
 	\KwData{$n$ \tcp*[f]{Eingabe für gerade $n$}}\;
 	\KwResult{solved $W$ \tcp*[f]{vollständige Mauer ohne Überschneidungen}}\;
