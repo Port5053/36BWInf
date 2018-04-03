@@ -270,9 +270,9 @@ Das Backtracking geht den gesamten Baum ab, bis eine Lösung gefunden wurde. Die
 \par
 \input{figBaeume}
 \\\\\\
-Um die Laufzeit der Suche zu verringern, wird eine Suchheuristik angewendet, welche die Reihenfolge der betrachteten Möglichkeiten beeinflusst. Eine solche Heuristik sollte die Schritte zuerst wählen, die eine höhere Wahrscheinlichkeit haben, zielführend zu sein. So verringert sich die durchschnittliche Größe des betrachteten Teilbaums. Ausschlaggebend für diese Größe ist unter Anderem die Anzahl von vorgekommenen Kollisionen.
+Um die Laufzeit der Suche zu verringern, wird eine Suchheuristik angewendet, welche die Reihenfolge der betrachteten Möglichkeiten beeinflusst. Eine solche Heuristik sollte die Schritte zuerst wählen, die eine höhere Wahrscheinlichkeit haben, zielführend zu sein. So verringert sich die durchschnittliche Größe des betrachtenten Teilbaums. Ausschlaggebend für diese Größe ist unter Anderem die Anzahl von vorgekommenen Kollisionen.
 \\\\
-Werden die Reihen immer in der gleichen Reihenfolge betrachtet, entsteht eine Ungleichgewichtung in den Steinlängen. Es wird immer versucht, die nächste Fuge zuerst in den oben liegenden Reihen zu setzen. So werden tendenziell mehr Fugen in den oberen Reihen und weniger in den unteren gesetzt. Eine höhere Dichte an Fugen führt zu kleineren Steinlängen. Daher füllen sich die oberen Reihen zuerst mit kurzen Steinlängen und die unteren mit Langen. Dieses Verhalten erzeugt eine erhöhte Anzahl von Kollisionen: Werden beispielsweise in den oberen Reihen kurze Steinlängen bevorzugt, so ist es beim Anfügen eines weiteren kurzen Steins wahrscheinlicher, dass dieser schon verwendet wurde. Gleiches gilt für die unteren Reihen mit langen Steinen.
+Werden die Reihen immer in der gleichen Reihenfolge betrachtet, entsteht eine Ungleichgewichtung in den Steinlängen. Es wird immer versucht, die nächste Fuge zuerst in den oben liegenden Reihen zu setzen. So werden tendenziell mehr Fugen in den oberen Reihen und weniger in den unteren gesetzt. Eine höhere Dichte an Fugen führt zu kleineren Steinlängen. Daher füllen sich die oberen Reihen zuerst mit kurzen Steinlängen und die unteren mit Langen. Dieses Verhalten erzeugt eine erhöhte Anzahl von Kollisionen: Werden beispielsweise in den oberen Reihen kurze Steinlängen bevorzugt, so ist es beim Anfügen eines weiteren kurzen Steins warscheinlicher, dass dieser schon verwendet wurde. Gleiches gilt für die unteren Reihen mit langen Steinen.
 
 Werden die Fugen anfänglich nur oben gesetzt, so können untere Reihen sogar so weit zurückfallen, dass selbst der längste Stein nicht zum Auffüllen ausreicht. Da die unteren Reihen erst dann betrachtet werden, wenn alle Oberen keine Kapazität mehr haben, werden diese Suchzweige erst sehr spät abgebrochen. Dies führt zu vollständigen Suchzweigen, die verworfen werden müssen, da die unteren Reihen von Anfang an nicht mehr füllbar waren.
 \begin{figure}[H]
@@ -333,7 +333,7 @@ Die Eigenschaften (1) bis (5) sind als natürliche Zahlen darstellbar. Die Reihe
 \begin{align*}
  	R &\leftarrow R\cup\{b\} & R &\leftarrow R\backslash\{b\} & (b &\in R)
 \end{align*}
-Als Datenstruktur wird für jede Reihe ein boolesches Array $usedBricks[n]$ verwendet. Das $i$-te Element $usedBricks[i]$ sagt dabei aus, ob der Stein der Länge $b=i+1$ enthalten ist. Das Hinzufügen beziehungsweise Entfernen wird durch die Änderung des Wertes des jeweiligen Elements erzielt. Alle Operationen benötigen dabei eine Laufzeitkomplexität von $\mathcal{O}(1)$.
+Als Datenstruktur wird für jede Reihe ein boolsches Array $usedBricks[n]$ verwendet. Das $i$-te Element $usedBricks[i]$ sagt dabei aus, ob der Stein der Länge $b=i+1$ enthalten ist. Das Hinzufügen beziehungsweise Entfernen wird durch die Änderung des Wertes des jeweiligen Elements erzielt. Alle Operationen benötigen dabei eine Laufzeitkomplexität von $\mathcal{O}(1)$.
 \begin{figure}[H]
 	\centering
 	\begin{tabular}{rcc}
@@ -344,7 +344,7 @@ Als Datenstruktur wird für jede Reihe ein boolesches Array $usedBricks[n]$ verw
 		Beinhaltung & $(b \in R)$ & $(usedBricks[b-1])$
 	\end{tabular}
 \end{figure}
-Alle booleschen Arrays werden in einem Array $wall[h]$ zusammengefasst. Der entsprechende Index innerhalb von $wall[\,]$ identifiziert jede Reihe eindeutig und ist unveränderlich.
+Alle boolschen Arrays werden in einem Array $wall[h]$ zusammengefasst. Der entsprechende Index innerhalb von $wall[\,]$ identifiziert jede Reihe eindeutig und ist unveränderlich.
 
 Durch die eindeutige Zuordnung jeder Reihe mit einem Index kann die in Sektion (\ref{subsec:heuristik}) beschriebene Reihenfolge durch eine Liste $order[h]$ ausgedrückt werden. Der Wert jedes Elements $order[i]$ entspricht dem Index der $i-ten$ Reihe innerhalb der Reihenfolge. Die kürzeste Reihe liegt in $order[0]$.
 
@@ -394,7 +394,7 @@ Es muss jedoch gar nicht der ganze Suchbaum durchsucht werden. Wenn eine Lösung
 \end{figure}
 Da jede Spalte mindestens einmal auf jeder Reihe durch eine Fuge besetzt war, sind alle Permutationen im Suchbaum gleichmäßig verteilt. Eine Ungleichverteilung kommt nur zustande, wenn viele Lösungen die gleiche Spaltenbesetzung am Anfang aufweisen, da dies ausschlaggebend für die ungefähre Position des Suchzweigs im Baum ist. Ist die Besetzung verschieden, unterscheiden sich die Suchzweige.
 
-Da die $h!$ Permutationen gleichverteilt sind, muss schon im ersten $\frac{1}{h!}$ -ten Teil eine Lösung enthalten sein. Die Größe des zu betrachtenden Baums sinkt also auf
+Da die $h!$ Permutationen gleichverteilt sind, muss schon im ersten $\frac{1}{h!}$ -ten Teil eine Lösung enthalten sein. Die Größe des zu betrachtenden Baums sink also auf
 \begin{equation*}
 	\frac{(nh)^h}{h!}
 \end{equation*}
@@ -437,7 +437,7 @@ Die Heuristik ist ab $n=6$ deutlich schneller als der normale Algorithmus. Das h
 \enlargethispage{2em}
 \newpage
 \subsection{Speicherkomplexität}
-Speicherplatz wird hauptsächlich durch die Arrays $usedBricks$, $endpoints$ und $order$ eingenommen (\emph{siehe} Sektion \ref{subsec:datenstrukturen}). Die restlichen Variablen wie Breite, Höhe und Spalte benötigen $\mathcal{O}(1)$ Speicher. Sowohl $endpoints$ als auch $order$ haben $h$ Einträge. Da die Höhe $h$ sich proportional zu $n$ verhält besitzen beide Arrays Speicherkomplexität $\mathcal{O}(n)$. Das Array $usedBricks$ ist zweidimensional, da es als Einträge $h$boolesche Arrays der Größe $n$ besitzt. Als Komplexität ergibt sich
+Speicherplatz wird hauptsächlich durch die Arrays $usedBricks$, $endpoints$ und $order$ eingenommen (\emph{siehe} Sektion \ref{subsec:datenstrukturen}). Die restlichen Variablen wie Breite, Höhe und Spalte benötigen $\mathcal{O}(1)$ Speicher. Sowohl $endpoints$ als auch $order$ haben $h$ Einträge. Da die Höhe $h$ sich proportional zu $n$ verhält besitzen beide Arrays Speicherkomplexität $\mathcal{O}(n)$. Das Array $usedBricks$ ist zweidimensional, da es als Einträge $h$boolsche Arrays der Größe $n$ besitzt. Als Komplexität ergibt sich
 \begin{equation*}
 	\mathcal{O}(h \cdot n) = \mathcal{O}(n^2)
 \end{equation*}
