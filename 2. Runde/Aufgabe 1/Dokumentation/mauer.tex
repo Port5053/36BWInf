@@ -8,7 +8,7 @@
 \usepackage{amsmath}
 
 \usepackage{siunitx}
-
+\usepackage{listings}
 \usepackage[noline]{algorithm2e}
 
 \usepackage{float}
@@ -25,6 +25,8 @@
 	multi-part-units=repeat,
 	locale=DE
 }
+
+\lstset{language=C, basicstyle=\footnotesize\ttfamily, tabsize=2}
 
 \newcommand{\mycommentsty}[1]{\itshape\textcolor{gray}{#1}}
 \SetCommentSty{mycommentsty}
@@ -396,12 +398,15 @@ Da die $h!$ Permutationen gleichverteilt sind, muss schon im ersten $\frac{1}{h!
 	\frac{(nh)^h}{h!}
 \end{equation*}
 Da $h$ nach Gleichung (\ref{eq:evenheight}) proportional zu $n$ ist, kann für die asymptotische Betrachtung $h$ durch $n$ substituiert werden, da dies nur zu einer Streckung des Eingaberaums führt. Da $h < n$ ist dies im Sinne der Laufzeitbetrachtung. Es ergibt sich
+\renewcommand{\thefootnote}{$\dagger$}
 \begin{align*}
 	\mathcal{O} \left( \frac{(nh)^h}{h!} \right) &= \mathcal{O} \left( \frac{(n \cdot n)^{\frac{1}{2}n+1}}{n!} \right) = \mathcal{O} \left( \frac{n^{n+2}}{n!} \right) \\
-	\intertext{Nach der \textsc{Stirling}'schen Formel\cite{stirling} \qquad $\displaystyle n! \approx \left( \frac{n}{e} \right)^n \sqrt{\tau n} $}
+	\intertext{Nach der \textsc{Stirling}'schen Formel\cite{stirling} \qquad $\displaystyle n! \approx \left( \frac{n}{e} \right)^n \sqrt{\tau n} \qquad \footnotemark $}
 	&= \mathcal{O} \left( \frac{n^{n+2}}{n^ne^{-n}\sqrt{\tau n}} \right) = \mathcal{O} \left( n^2e^{-n}n^{-\frac{1}{2}} \right) \\
 	&= \mathcal{O} \left( n^{\frac{3}{2}}e^n \right) 
 \end{align*}
+\footnotetext{$\tau = 2\pi$ \qquad (\emph{siehe} \href{https://tauday.com/tau-manifesto}{\url{https://tauday.com/tau-manifesto}})}
+\renewcommand{\thefootnote}{\arabic{footnote}}
 Es handelt sich hier um die Worst-Case-Laufzeit, welche unabhängig von der Heuristik ist. In der Praxis können geringfügige Unterschiede im Aufbau des Suchbaums zu großen Laufzeitunterschieden führen.
 
 Die Heuristik ist ab $n=6$ deutlich schneller als der normale Algorithmus. Das hängt damit zusammen, dass die Listenoperationen zusätzlich Zeit kosten, welche erst bei größeren $n$ aufgeholt werden. Für $n=10$ benötigt die Heuristik \SI{1.1}{\milli\second}, was 4 Millionen mal schneller ist als der normale Algorithmus mit über einer Stunde. Der Algorithmus ohne Heuristik ist bis jetzt\footnote{und vermutlich auch in 1000 Jahren} immer noch nicht fertig mit $n=11$. Die Heuristik kommt bis $n=17$, wofür eine Minute gebraucht wird.\vspace*{-1em}
@@ -431,7 +436,6 @@ Die Heuristik ist ab $n=6$ deutlich schneller als der normale Algorithmus. Das h
 \enlargethispage{2em}
 \newpage
 \section{Anhang}
-\input{algorithms}
 
 \begin{thebibliography}{9}
 \bibitem{stirling}
@@ -439,4 +443,22 @@ Die Heuristik ist ab $n=6$ deutlich schneller als der normale Algorithmus. Das h
 	\emph{University of Conneticut Math Department},\\
 	\href{http://www.math.uconn.edu/~kconrad/blurbs/analysis/stirling.pdf}{\url{http://www.math.uconn.edu/~kconrad/blurbs/analysis/stirling.pdf}}
 \end{thebibliography}
+
+\subsection*{Benutzung}
+Das Programm wurde in C++11 implementiert und wurde mit \texttt{g++} 5.4.0 kompiliert. Das Programm nimmt $n$ als erstes Kommandozeilen-Argument als Dezimalzahl. Die beigefügte Makefile unterstützt die Ausgabe der Lösung drei Modi. \\\\
+\texttt{make} \\
+Gibt die Wand als delimiter-separierte Längen von Steinen in Dezimalschreibweise auf \texttt{stdout} aus. Jede Zeile ist eine Reihe.\\\\
+\texttt{make image} \\
+Erzeugt ein PNG-Bild benannt nach $n$ und speichert es im aktuellen Verzeichnis. Diese Option benötigt X11-Support.\\\\
+\texttt{make gui} \\
+Zeigt die Wand in einem Fenster an. Diese Option benötigt X11-Support.\\
+\newpage
+\input{algorithms}
+\newpage
+\subsection*{Lösungen}
+\input{solutions}
+
+\newpage
+\subsection*{Code}
+\lstinputlisting{../wall.cpp}
 \end{document}

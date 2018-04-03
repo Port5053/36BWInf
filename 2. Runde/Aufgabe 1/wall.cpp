@@ -5,7 +5,10 @@
 #include <list>
 
 #ifdef IMAGE
-#include "CImg.h"
+#	include "CImg.h"
+#	ifndef GUI
+#		include <string>
+#	endif
 using namespace cimg_library;
 const int IMG_WIDTH = 1200;
 const int TILE_SIZE = 50;
@@ -82,13 +85,16 @@ bool Wall::finished() const {
 #ifdef IMAGE
 CImg<unsigned char> Wall::getImage() const {
 	int size = std::min(TILE_SIZE, IMG_WIDTH/(int) width);
-	CImg<unsigned char> image(width*size, height*size, 1, 1, 0);
+	CImg<unsigned char> image(width*size+1, height*size+1, 1, 1, 0);
 
 	std::vector<int> xpos(height, 0);
 	int slit = 0;
+	bool first = true;
 	for (const auto& pair : solution) {
-		image.draw_rectangle(size*xpos.at(pair.first)+1, size*pair.first+1,
-			size*slit-1, size*(pair.first+1)-1, FOREGROUND);
+		if (first)
+			first = false;
+		else image.draw_rectangle(size*xpos.at(pair.first)+1, size*pair.first+1,
+				size*slit-1, size*(pair.first+1)-1, FOREGROUND);
 		xpos.at(pair.first) = slit;
 		slit += (1+pair.second);
 	}
@@ -146,10 +152,14 @@ int main(int argc, char const *argv[]) {
 	solve(wall);
 #ifdef IMAGE
 	auto image = wall.getImage();
+#ifdef GUI
 	CImgDisplay disp(image);
 	image.display(disp);
 	while (!disp.is_closed() && !disp.is_keyESC())
 		disp.wait();
+#else
+	image.save((std::to_string(n) + ".png").c_str());
+#endif // GUI
 #else
 	wall.printWall();
 #endif  // IMAGE
