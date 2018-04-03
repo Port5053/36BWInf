@@ -23,7 +23,6 @@ public:
 	CImg<unsigned char> getImage() const;
 #endif
 	void printWall() const;
-// private:
 	int n, width, height, slit, spaces;
 
 	std::vector< std::vector<bool> > usedBricks;
@@ -33,10 +32,11 @@ public:
 };
 
 Wall::Wall(int _n) {
+	/* Initialisiert eine Wand n mit allen Datenstrukturen*/
 	n = _n;
-	width = n*(n+1)/2;
-	height = n/2 + 1;
-	spaces = (width-1) % (n-1);
+	width = n*(n+1)/2;  // Breite w
+	height = n/2 + 1;  // Hoehe h
+	spaces = (width-1) % (n-1);  // r, dargestellt als Rest von Division
 	usedBricks = std::vector< std::vector<bool> >(
 		height, std::vector<bool>(n, false));
 	endpoints = std::vector<int>(height, 0);
@@ -47,6 +47,8 @@ Wall::Wall(int _n) {
 }
 
 bool Wall::valid(const int& row, const int& skip) const {
+	/* Gibt zurueck ob der Schritt vom Anlegen in Reihe row mit
+	   skip Spruengen moeglich ist. */
 	int brick = slit + 1 + skip - endpoints.at(row);
 	if (brick > n)
 		return false;
@@ -56,6 +58,9 @@ bool Wall::valid(const int& row, const int& skip) const {
 }
 
 int Wall::fill(const int& row, const int& skip) {
+	/* Fuegt einen Stein in die Reihe row an und aktualisiert
+	   die Laengen und Steinbelegungen . Gibt die Laenge b des
+	   Steins zurueck. */
 	int brick = slit + 1 + skip - endpoints.at(row);
 	usedBricks.at(row).at(brick-1) = true;
 	endpoints.at(row) += brick;
@@ -143,11 +148,10 @@ int main(int argc, char const *argv[]) {
 	auto image = wall.getImage();
 	CImgDisplay disp(image);
 	image.display(disp);
-	while (!disp.is_closed() && !disp.is_keyESC()) {
+	while (!disp.is_closed() && !disp.is_keyESC())
 		disp.wait();
-	}
 #else
 	wall.printWall();
-#endif
+#endif  // IMAGE
 	return 0;
 }

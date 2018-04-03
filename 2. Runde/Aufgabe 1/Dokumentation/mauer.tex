@@ -7,6 +7,7 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 
+\usepackage{siunitx}
 
 \usepackage[noline]{algorithm2e}
 
@@ -15,7 +16,15 @@
 \usepackage[hidelinks]{hyperref}
 
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta, backgrounds}
+\usepackage{pgfplots}
+\usetikzlibrary{arrows.meta}
+\pgfplotsset{compat=1.6}
+
+\sisetup{
+	separate-uncertainty,
+	multi-part-units=repeat,
+	locale=DE
+}
 
 \newcommand{\mycommentsty}[1]{\itshape\textcolor{gray}{#1}}
 \SetCommentSty{mycommentsty}
@@ -465,6 +474,10 @@ Durch Ordnung nach aufsteigender Länge werden immer zuerst die kürzesten Reihe
 	\caption{Umordnung nach Anfügen eines Steins}
 \end{figure}
 Das Anfügen eines Steins verlängert die gewählte Reihe. Da bis zu einer bisher ungefüllten Spalte aufgefüllt wird, ist die Reihe nach Auffüllen die längste Reihe der Mauer. Demnach rutscht die gewählte Reihe immer an das Ende der Ordnung. Die Reihenfolge der restlichen Reihen bleibt erhalten. War ein Schritt nicht erfolgreich, müssen die unternommenen Veränderungen für das Backtracking rückgängig gemacht werden. Die gewählte Reihe muss demnach wieder an die vorherige Position in der Ordnung gesetzt werden.
+
+Die Heuristik ist ab $n=6$ deutlich schneller als der normale Algorithmus. Das hängt damit zusammen, dass die Listenoperationen zusätzlich Zeit kosten, welche erst bei größeren $n$ aufgeholt werden. Für $n=10$ benötigt die Heuristik \SI{1.1}{\milli\second}, was 4 Millionen mal schneller ist als der normale Algorithmus mit über einer Stunde. Der Algorithmus ohne Heuristik ist bis jetzt\footnote{und vermutlich auch in 1000 Jahren} immer noch nicht fertig mit $n=11$. Die Heuristik kommt bis $n=17$, wofür sie circa eine Minute braucht.
+
+Die Laufzeiten der einzelnen Algorithmen sind auch im Anhang Abbildung (\ref{fig:laufzeit}) in Abhängigkeit von $n$ dargestellt.
 \newpage
 \section{Implementation}
 \subsection{Datenstrukturen}
@@ -567,9 +580,44 @@ Die Reihenfolge wird am Anfang und Ende von jedem Schritt verändert. Dabei wird
 		\draw[thick] (4.5, 0) -- ++(-60:.5) -- ++(180:.5) -- cycle node[below=4mm] {E};
 	\end{tikzpicture}
 	\caption{Zeiger in der Linked-List während eines Schrittes}
+\end{figure}\vspace{-6pt}
+Die Längen $\ell(R)$ müssen nicht erst als Summe (\emph{siehe} \ref{eq:laenge}) der Steinlängen errechnet werden, da dies $\mathcal{O}(n)$ benötigen würde. Stattdessen werden die Längen in einem Array $endpoints[h]$ gespeichert, wobei $endpoints[i]$ die Länge $\ell(R)$ der Reihe mit Index $i$ darstellt. Am Anfang sind alle Reihen leer, sodass $endpoints$ mit 0 initialisiert wird. Wird ein Stein der Länge $b$ in der Reihe $R$ hinzugefügt oder entfernt, wird dies auf die Länge addiert beziehungsweise subtrahiert. Dies geschieht in $\mathcal{O}(1)$.
+\begin{figure}[H]
+	\centering
+	\begin{tabular}{rcc}
+		Operation & \hspace{1cm} Menge $R$ \hspace{1cm} & Array $endpoints$ \\
+		\hline
+		Einfügen & $R \leftarrow R\cup\{b\}$ & $endpoints[i] \leftarrow endpoints[i] + b$ \\
+		Entfernen & $R \leftarrow R\backslash\{b\}$ & $endpoints[i] \leftarrow endpoints[i] - b$ \\
+	\end{tabular}
 \end{figure}
+\section{Laufzeit}
+Die Laufzeit des Programms hängt von der Größe
 \newpage
 \section{Anhang}
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[trim axis left, trim axis right]
+		\begin{axis}[
+				xlabel=$n$,
+				ylabel=$t\lbrack\si{\second}\rbrack$,
+				ymode=log,
+				xmin=1, xmax=18,
+				ymin=5e-6, ymax=1e4,
+				xtick=data,
+				width=\textwidth,
+				height=.5\textheight,
+		  	]
+			\addplot[black, thick, mark=none] table[x=n, y=slow] {runtimesFull.dat};
+			\addplot[black, thick, mark=none] table[x=n, y=fast] {runtimesFull.dat};
+			\sffamily\large
+			\node at (axis cs: 17, 10) {(a)};
+			\node at (axis cs: 10.5, 1e3) {(b)};
+		\end{axis}
+	\end{tikzpicture}
+	\caption{Laufzeit $t$ in Abh. von $n$ mit Heuristik \textsf{(a)} und ohne \textsf{(b)}}
+	\label{fig:laufzeit}
+\end{figure}
 \begin{algorithm}[H]
 	\DontPrintSemicolon
 	\KwData{$n$ \tcp*[f]{Eingabe für gerade $n$}}\;
