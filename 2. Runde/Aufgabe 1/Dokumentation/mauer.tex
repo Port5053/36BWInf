@@ -296,7 +296,7 @@ Werden die Fugen anfänglich nur oben gesetzt, so können untere Reihen sogar so
 \end{figure}
 Im Beispiel von Abbildung (\ref{fig:sackgasse}) können die oberen drei Reihen nicht besetzt werden, da die benötigten Steine schon verbaut sind. Allerdings sind schon die ersten zehn Spalten besetzt, sodass seit vier Schritten schon die unterste Reihe nicht mehr besetzbar war.
 \\\\
-Im Anhang (TODO ref me) wird die Kollisionshäufigkeit genauer statistisch untersucht. Die Beobachtungen unterstützen die obigen Vorhersagen?
+Im Anhang Abbildung (\ref{fig:kollisionen}) wird die Kollisionshäufigkeit genauer statistisch untersucht. Die Beobachtungen unterstützen die obigen Vorhersagen.
 \newpage
 Die gewählte Heuristik wirkt diesen Effekten entgegen.
 \begin{framed}
@@ -313,6 +313,7 @@ Das Anfügen eines Steins verlängert die gewählte Reihe. Da bis zu einer bishe
 \newpage
 \section{Implementation}
 \subsection{Datenstrukturen}
+\label{subsec:datenstrukturen}
 Der in Sektion (\ref{sec:algorithmus}) beschriebene Algorithmus greift auf abstrakte Datenstrukturen wie Mengen zurück. Eine Mauer wird in jedem Zustand während der Suche durch folgende Eigenschaften charakterisiert:
 \begin{enumerate}
 	\itemsep-2pt
@@ -435,6 +436,14 @@ Die Heuristik ist ab $n=6$ deutlich schneller als der normale Algorithmus. Das h
 \end{figure}
 \enlargethispage{2em}
 \newpage
+\subsection{Speicherkomplexität}
+Speicherplatz wird hauptsächlich durch die Arrays $usedBricks$, $endpoints$ und $order$ eingenommen (\emph{siehe} Sektion \ref{subsec:datenstrukturen}). Die restlichen Variablen wie Breite, Höhe und Spalte benötigen $\mathcal{O}(1)$ Speicher. Sowohl $endpoints$ als auch $order$ haben $h$ Einträge. Da die Höhe $h$ sich proportional zu $n$ verhält besitzen beide Arrays Speicherkomplexität $\mathcal{O}(n)$. Das Array $usedBricks$ ist zweidimensional, da es als Einträge $h$boolsche Arrays der Größe $n$ besitzt. Als Komplexität ergibt sich
+\begin{equation*}
+	\mathcal{O}(h \cdot n) = \mathcal{O}(n^2)
+\end{equation*}
+Damit überwiegt im asymptotischen Fall die quadratische Komponente, was eine Gesamt-Speicherkomplexität von $\mathcal{O}(n^2)$ ergibt.
+
+Es könnte argumentiert werden, dass der interne Call-Stack der rekursiven Funktionsaufrufe auch mit zum Speicher gezählt wird. Der benötigte Speicher des Stacks entspricht allerdings der maximalen Rekursionstiefe, welche die Anzahl von Spalten $w-1$ ist. Da nach Gleichung (\ref{eq:width}) $\mathcal{O}(w) = \mathcal{O}(n^2)$ bleibt es bei quadratischer Komplexität.
 \section{Anhang}
 
 \begin{thebibliography}{9}
@@ -452,7 +461,31 @@ Gibt die Wand als delimiter-separierte Längen von Steinen in Dezimalschreibweis
 Erzeugt ein PNG-Bild benannt nach $n$ und speichert es im aktuellen Verzeichnis. Diese Option benötigt X11-Support.\\\\
 \texttt{make gui} \\
 Zeigt die Wand in einem Fenster an. Diese Option benötigt X11-Support.\\
-\newpage
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[trim axis left, trim axis right]
+		\begin{axis}[
+				xlabel=$n$,
+				ylabel=\textrm{Kollisionen},
+				ymode=log,
+				xmin=1, xmax=17,
+				ymax=1.5e9,
+				xtick=data,
+				width=\textwidth,
+				height=.5\textheight
+		  	]
+			\addplot[black, thick, mark=none] table[x=n, y=slow] {collisions.dat};
+			\addplot[black, thick, mark=none] table[x=n, y=fast] {collisions.dat};
+			\sffamily\large
+			\node at (axis cs: 15, 1e6) {(a)};
+			\node at (axis cs: 7.7, 1e8) {(b)};
+		\end{axis}
+	\end{tikzpicture}
+	\caption{Kollisionen in Abh. von $n$ mit Heuristik \textsf{(a)} und ohne \textsf{(b)}}
+	\label{fig:kollisionen}
+\end{figure}
+
 \input{algorithms}
 \newpage
 \subsection*{Lösungen}
