@@ -410,7 +410,7 @@ Da $h$ nach Gleichung (\ref{eq:evenheight}) proportional zu $n$ ist, kann für d
 \begin{align*}
 	\mathcal{O} \left( \frac{(nh)^h}{h!} \right) &= \mathcal{O} \left( \frac{(n \cdot n)^{\frac{1}{2}n+1}}{n!} \right) = \mathcal{O} \left( \frac{n^{n+2}}{n!} \right) \\
 	\intertext{Nach der \textsc{Stirling}'schen Formel\cite{stirling} \qquad $\displaystyle n! \approx \left( \frac{n}{e} \right)^n \sqrt{\tau n} \qquad \footnotemark $}
-	&= \mathcal{O} \left( \frac{n^{n+2}}{n^ne^{-n}\sqrt{\tau n}} \right) = \mathcal{O} \left( n^2e^{-n}n^{-\frac{1}{2}} \right) \\
+	&= \mathcal{O} \left( \frac{n^{n+2}}{n^ne^{-n}\sqrt{\tau n}} \right) = \mathcal{O} \left( n^2e^nn^{-\frac{1}{2}} \right) \\
 	&= \mathcal{O} \left( n^{\frac{3}{2}}e^n \right) 
 \end{align*}
 \footnotetext{$\tau = 2\pi$ \qquad (\emph{siehe} \cite{tau})}
