@@ -23,11 +23,16 @@
 \sisetup{
 	separate-uncertainty,
 	multi-part-units=repeat,
-	locale=DE
+	locale=DE,
+	scientific-notation=true,
+    fixed-exponent=0,
+    round-mode=places,
+    round-precision=3
 }
 
 \lstset{language=C, basicstyle=\footnotesize\ttfamily, tabsize=2}
 
+\SetAlgorithmName{Algorithmus}{}{}
 \newcommand{\mycommentsty}[1]{\itshape\textcolor{gray}{#1}}
 \SetCommentSty{mycommentsty}
 \newcommand{\myfuncsty}[1]{\rmfamily {#1}}
@@ -37,6 +42,7 @@
 \SetKwFor{While}{while}{\string:}{}%
 \SetKwIF{If}{ElseIf}{Else}{if}{:}{elif}{else:}{}%
 \SetKwComment{tcp}{}{}%
+\SetKwComment{tcc}{}{}%
 \SetKwComment{Comment}{}{}%
 \AlgoDontDisplayBlockMarkers\SetAlgoNoEnd\SetNoFillComment%
 
@@ -227,8 +233,8 @@ Während des Backtrackings soll $r$ die Anzahl von Spalten darstellen, die noch 
 \end{equation}
 Wurden $z$ Spalten übersprungen, so verringert sich $r$ um diese Zahl. Es können mindestens $0$ und maximal $r$ Spalten in einem Schritt übersprungen werden. Da nun nicht immer die direkt folgende Spalte als betrachtet wird, müssen die Gleichungen (\ref{eq:bprime}) und (\ref{eq:trans}) für den Übergang zum nächsten Schritt erweitert werden.
 \begin{gather}
-	b' = s + z -\ell(R) \qquad (b' \in \Sigma \backslash R \ \wedge\ 0 \le z \le r) \\
-	R' = R\,\cup\,\{b'\} \qquad \ell' = \ell + b' \qquad s' = s+z+1 \qquad r' = r - z
+	b' = s + z -\ell(R) \qquad (b' \in \Sigma \backslash R \ \wedge\ 0 \le z \le r) \label{eq:bprimeodd}\\
+	R' = R\,\cup\,\{b'\} \qquad \ell' = \ell + b' \qquad s' = s+z+1 \qquad r' = r - z \label{eq:transodd}
 \end{gather}
 Ein Schritt setzt sich nun zusammen aus einer Reihe $R \in W$ und einer Anzahl von Sprüngen $z \in Z$ mit $Z = \left\{ 0,\ \dots,\ r \right\}$. Die Menge aller Folgeschritte ist die Menge von allen Kombinationen $W \times Z$. Dazu werden die Iterationen über die Reihen und über die Sprunglängen geschachtelt. Die äußere Iteration geht über $z$ aufsteigend. Es werden demnach immer zuerst die Möglichkeiten mit der geringsten Anzahl von Sprüngen betrachtet. Für den erweiterten Algorithmus siehe Anhang (\ref{alg:all}).
 \subsection{Suchheuristik}
@@ -296,7 +302,7 @@ Werden die Fugen anfänglich nur oben gesetzt, so können untere Reihen sogar so
 \end{figure}
 Im Beispiel von Abbildung (\ref{fig:sackgasse}) können die oberen drei Reihen nicht besetzt werden, da die benötigten Steine schon verbaut sind. Allerdings sind schon die ersten zehn Spalten besetzt, sodass seit vier Schritten schon die unterste Reihe nicht mehr besetzbar war.
 \\\\
-Im Anhang Abbildung (\ref{fig:kollisionen}) wird die Kollisionshäufigkeit genauer statistisch untersucht. Die Beobachtungen unterstützen die obigen Vorhersagen.
+Im Anhang Abbildung (\ref{fig:kollisionen}) und Tabelle (\ref{fig:statistik}) wird die Kollisionshäufigkeit genauer statistisch untersucht. Die Beobachtungen unterstützen die obigen Vorhersagen.
 \newpage
 Die gewählte Heuristik wirkt diesen Effekten entgegen.
 \begin{framed}
@@ -327,7 +333,7 @@ Der in Sektion (\ref{sec:algorithmus}) beschriebene Algorithmus greift auf abstr
 		\item allen beinhalteten Steinen $b$ als Element
 		\item einer bestimmten Länge $\ell(R)$ \see{eq:laenge}
 	\end{enumerate}
-	\item einer Reihenfolge für Reihen in $W$  \emph{siehe} Sektion (\ref{subsec:heuristik})
+	\item einer Reihenfolge für Reihen in $W$  \hfill \emph{siehe} Sektion \ref{subsec:heuristik}
 \end{enumerate}
 Die Eigenschaften (1) bis (5) sind als natürliche Zahlen darstellbar. Die Reihe $R$ muss innerhalb der Suche drei Operationen mit einem Stein $b$ unterstützen: Einfügen, Entfernen und Test nach Beinhaltung.
 \begin{align*}
@@ -407,7 +413,7 @@ Da $h$ nach Gleichung (\ref{eq:evenheight}) proportional zu $n$ ist, kann für d
 	&= \mathcal{O} \left( \frac{n^{n+2}}{n^ne^{-n}\sqrt{\tau n}} \right) = \mathcal{O} \left( n^2e^{-n}n^{-\frac{1}{2}} \right) \\
 	&= \mathcal{O} \left( n^{\frac{3}{2}}e^n \right) 
 \end{align*}
-\footnotetext{$\tau = 2\pi$ \qquad (\emph{siehe} \href{https://tauday.com/tau-manifesto}{\url{https://tauday.com/tau-manifesto}})}
+\footnotetext{$\tau = 2\pi$ \qquad (\emph{siehe} \cite{tau})}
 \renewcommand{\thefootnote}{\arabic{footnote}}
 Es handelt sich hier um die Worst-Case-Laufzeit, welche unabhängig von der Heuristik ist. In der Praxis können geringfügige Unterschiede im Aufbau des Suchbaums zu großen Laufzeitunterschieden führen.
 
@@ -445,15 +451,15 @@ Speicherplatz wird hauptsächlich durch die Arrays $usedBricks$, $endpoints$ und
 Damit überwiegt im asymptotischen Fall die quadratische Komponente, was eine Gesamt-Speicherkomplexität von $\mathcal{O}(n^2)$ ergibt.
 
 Es könnte argumentiert werden, dass der interne Call-Stack der rekursiven Funktionsaufrufe auch mit zum Speicher gezählt wird. Der benötigte Speicher des Stacks entspricht allerdings der maximalen Rekursionstiefe, welche die Anzahl von Spalten $w-1$ ist. Da nach Gleichung (\ref{eq:width}) $\mathcal{O}(w) = \mathcal{O}(n^2)$ bleibt es bei quadratischer Komplexität.
+\newpage
 \section{Anhang}
+\subsection*{Diskussion}
+Die Funktionsweise des Programms basiert auf der Annahme, dass die durch die obere Schranke (\ref{eq:schranke}) gegebene Maximalhöhe immer erreichbar ist. Das Zutreffen diese Annahme ist zu vermuten, obwohl hier ein vollständiger Beweis von Nöten wäre. Da es für $n \le 17$ zutrifft, und dies der reell nutzbare Eingabebereich des Programms ist, hat dieses Problem geringere Relevanz. Für eine gültige Widerlegung müsste der gesamte Suchbaum abgegangen werden, um sicherzustellen, dass keine Lösung einer solchen Höhe vorhanden ist. Einzige Ausnahme stellt $n=1$ dar, da hier die Mauer ins unendliche fortgesetzt werden kann.
 
-\begin{thebibliography}{9}
-\bibitem{stirling}
-	Conrad, K, \textsc{Stirlings Formula},
-	\emph{University of Conneticut Math Department},\\
-	\href{http://www.math.uconn.edu/~kconrad/blurbs/analysis/stirling.pdf}{\url{http://www.math.uconn.edu/~kconrad/blurbs/analysis/stirling.pdf}}
-\end{thebibliography}
-
+Es wurde weiterhin beobachtet, dass es Lösungen gibt, welche sich weder durch Permutationen der Reihen noch durch Spiegelung ineinander überführen lassen. Die Anzahl dieser einzigartigen Lösungen wurde durch Abgehen des gesamten Suchbaums ermittelt. Die Reihe mit Anfang $n=1$ aufsteigend lautet
+\begin{equation*}
+	1,\ 1,\ 1,\ 3,\ 4,\ 520,\ 1120,\ \dots
+\end{equation*}
 \subsection*{Benutzung}
 Das Programm wurde in C++11 implementiert und wurde mit \texttt{g++} 5.4.0 kompiliert. Das Programm nimmt $n$ als erstes Kommandozeilen-Argument als Dezimalzahl. Die beigefügte Makefile unterstützt die Ausgabe der Lösung drei Modi. \\\\
 \texttt{make} \\
@@ -463,6 +469,17 @@ Erzeugt ein PNG-Bild benannt nach $n$ und speichert es im aktuellen Verzeichnis.
 \texttt{make gui} \\
 Zeigt die Wand in einem Fenster an. Diese Option benötigt X11-Support.\\
 
+\begin{thebibliography}{9}
+\bibitem{stirling}
+	Conrad, K., \textsc{Stirlings Formula},
+	\emph{University of Conneticut Math Department},\\
+	\href{http://www.math.uconn.edu/~kconrad/blurbs/analysis/stirling.pdf}{\url{http://www.math.uconn.edu/~kconrad/blurbs/analysis/stirling.pdf}}
+\bibitem{tau}
+	Hartl, M., \textsc{The Tau Manifesto},\\
+	\href{https://tauday.com/tau-manifesto}{\url{https://tauday.com/tau-manifesto}}\\
+	\emph{Tau Day} (28. 6.), 2010
+\end{thebibliography}
+\newpage
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}[trim axis left, trim axis right]
@@ -474,7 +491,7 @@ Zeigt die Wand in einem Fenster an. Diese Option benötigt X11-Support.\\
 				ymax=1.5e9,
 				xtick=data,
 				width=\textwidth,
-				height=.5\textheight
+				height=.4\textheight
 		  	]
 			\addplot[black, thick, mark=none] table[x=n, y=slow] {collisions.dat};
 			\addplot[black, thick, mark=none] table[x=n, y=fast] {collisions.dat};
@@ -485,6 +502,31 @@ Zeigt die Wand in einem Fenster an. Diese Option benötigt X11-Support.\\
 	\end{tikzpicture}
 	\caption{Kollisionen in Abh. von $n$ mit Heuristik \textsf{(a)} und ohne \textsf{(b)}}
 	\label{fig:kollisionen}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\begin{tabular}{r|ll|ll}
+		$n$ & \multicolumn{2}{c}{Laufzeit $t[\si{\second}]$} & \multicolumn{2}{c}{Kollisionen}  \\
+		    & (mit Heuristik) & (ohne Heuristik) & (mit Heuristik) & (ohne Heuristik) \\
+		\hline
+		2  & \num{1.1823e-05} & \num{5.469e-06}  & 0   & 1 \\
+		3  & \num{1.4739e-05} & \num{7.187e-06}  & 2   & 4 \\
+		4  & \num{2.9166e-05} & \num{1.7135e-05} & 3   & 9 \\
+		5  & \num{3.25e-05  } & \num{2.0416e-05} & 9   & 18 \\
+		6  & \num{4.6823e-05} & \num{5.7552e-05} & 13  & 186 \\
+		7  & \num{5.099e-05 } & \num{0.00106442} & 25  & 6654 \\
+		8  & \num{0.00024104} & \num{0.0137708}  & 370 & 85818 \\
+		9  & \num{8.6301e-05} & \num{149.186}    & 110 & \num{1800977210} \\
+		10 & \num{0.00115634} & \num{4378.01}    & 5115 & -- \\
+		11 & \num{0.0277631}  & --               & \num{215490} & -- \\
+		12 & \num{0.0108956}  & --               & \num{59872} & -- \\
+		13 & \num{0.101421}   & --               & \num{809041} & -- \\
+		14 & \num{0.22647}    & --               & \num{1422247} & -- \\
+		15 & \num{0.897285}   & --               & \num{7648750} & -- \\
+		16 & \num{6.62009}    & --               & \num{45697912} & -- \\
+		17 & \num{56.4537}    & --               & \num{572035570}& -- \\
+	\end{tabular}
+	\caption{Statistiken}\label{fig:statistik}
 \end{figure}
 
 \input{algorithms}
@@ -498,6 +540,6 @@ Zeigt die Wand in einem Fenster an. Diese Option benötigt X11-Support.\\
 \hspace{-10pt}
 \input{txtSolutions}
 \newpage
-\subsection*{Code}
+\subsection*{Quellcode}
 \lstinputlisting{../wall.cpp}
 \end{document}

@@ -1,75 +1,78 @@
- \begin{algorithm}[H]
+\newcommand{\myComment}[1]{\qquad\Comment*[h]{#1}}
+\begin{algorithm}[H]
 	\DontPrintSemicolon
-	\KwData{$n$ \tcp*[f]{Eingabe für gerade $n$}}\;
-	\KwResult{solved $W$ \tcp*[f]{vollständige Mauer ohne Überschneidungen}}\;
+	\KwData{$n$ \myComment{Eingabe für gerade $n$}}\;
+	\KwResult{solved $W$ \myComment{vollständige Mauer ohne Überschneidungen}}\;
 	\SetKwFunction{FMain}{putStone}
 	\SetKwProg{Fn}{def}{:}{}
-	$h \leftarrow \frac{1}{2}n + 1$\Comment*[f]{Gl.(\ref{eq:evenheight})}\; \vspace{3pt}
-	$w \leftarrow \frac{1}{2}n(n+1)$\Comment*[f]{Gl. (\ref{eq:width})}\;
+	$h \leftarrow \frac{1}{2}n + 1$\myComment{Gleichung (\ref{eq:evenheight})}\; \vspace{3pt}
+	$w \leftarrow \frac{1}{2}n(n+1)$\myComment{Gleichung (\ref{eq:width})}\;
 	$W \leftarrow \left\{ \emptyset \right\}^h$\;
 	$s \leftarrow 1$\;
-	\Fn(\tcp*[f]{Rekursive Funktion}){\FMain{$R,\ b$}}{
+	\Fn{\FMain{$R,\ b$}}{
+		\tcp*[h]{Rekursive Funktion. Fügt einen Stein $b$ an die Reihe $R$ an. Danach wird jede Folgemöglichkeit eines weiteren Steins getestet. Ist die Mauer  gefüllt oder eine der Möglichkeiten war selbst erfolgreich, wird wahr zurückgegeben. Andernfalls werden die Änderungen rückgängig gemacht und Fehlschlag zurueckgegeben.}\;
 		$s \leftarrow s + 1$\;
-		$\ell(R) \leftarrow \ell(R) + b$\;
+		$\ell(R) \leftarrow \ell(R) + b$\myComment{Gleichung (\ref{eq:trans})}\;
 		$R \leftarrow R\,\cup\,\{b\}$\;
 		\If{$s = w$}{
 			\Return \textbf{True}\;
 		}
-		\For{$R'$ \KwTo $W$}{
-			$b' \leftarrow s - \ell(R')$\Comment*[f]{Gl. (\ref{eq:bprime})}\;
+		\For(\myComment{Iteration über Möglichkeiten}){$R'$ \KwTo $W$}{
+			$b' \leftarrow s - \ell(R')$\myComment{Gleichung (\ref{eq:bprime})}\;
 			\If{$b' \notin R'$}{
-				\If{\FMain{$R',\ b'$}}{
+				\If(\myComment{Rekursiver Funktionsaufruf}){\FMain{$R',\ b'$}}{
 					\Return \textbf{True}\;
 				}
 			}
 		}
 		$s \leftarrow s - 1$\;
-		$R \leftarrow R\backslash\{b\}$\;
+		$R \leftarrow R\backslash\{b\}$\myComment{Rückgängigmachen der Änderungen}\;
 		$\ell(R) \leftarrow \ell(R) - b$\;
-		\Return \textbf{False}\;
+		\Return \textbf{False}\myComment{Abbruchbedingung: vollständige Mauer}\;
 		}
-		\BlankLine\;
-		\For{$R$ \KwTo $W$}{
-			\FMain{$R,\ 1$}\;
-		}
+	\BlankLine\;
+	\For{$R$ \KwTo $W$}{
+		\FMain{$R,\ 1$}\;
+	}
 	\caption{Backtracking für gerade $n$}\label{alg:even}
 \end{algorithm}
 \newpage
 \begin{algorithm}[H]
 	\DontPrintSemicolon
-	\KwData{$n$ \tcp*[f]{Eingabe für gerade $n$}}\;
-	\KwResult{solved $W$ \tcp*[f]{vollständige Mauer ohne Überschneidungen}}\;
+	\KwData{$n$ \myComment{Eingabe für gerade $n$}}\;
+	\KwResult{solved $W$ \myComment{vollständige Mauer ohne Überschneidungen}}\;
 	\SetKwFunction{FMain}{putStone}
 	\SetKwProg{Fn}{def}{:}{}
-	$h \leftarrow \left\lfloor\frac{1}{2}n\right\rfloor + 1$\Comment*[f]{Gl.(\ref{eq:evenheight}, \ref{eq:oddheight})[TODO INDENTS]}\;\vspace{3pt}
-	$w \leftarrow \frac{1}{2}n(n+1)$\Comment*[f]{Gl. (\ref{eq:width})}\;
+	$h \leftarrow \left\lfloor\frac{1}{2}n\right\rfloor + 1$\myComment{Gleichung(\ref{eq:evenheight}, \ref{eq:oddheight})}\;\vspace{3pt}
+	$w \leftarrow \frac{1}{2}n(n+1)$\myComment{Gleichung (\ref{eq:width})}\;
 	$W \leftarrow \left\{ \emptyset \right\}^h$\;
-	\eIf{$2 \mid n$}{
+	\eIf(\myComment{Gleichung (\ref{eq:sprung})}){$2 \mid n$}{
 		$r \leftarrow 0$\;
 	}{
 		$r \leftarrow \frac{1}{2}(n-1)$\;
 	}
 	$s \leftarrow 1$\;
-	\Fn(\tcp*[f]{Rekursive Funktion}){\FMain{$R,\ b,\ z$}}{
+	\Fn{\FMain{$R,\ b,\ z$}}{
+		\tcc*[l]{Rekursive Funktion. Fügt einen Stein $b$ an die Reihe $R$ an und überspringt $z$ Spalten. Danach wird jede Folgemöglichkeit eines weiteren Steins getestet. Ist die Mauer  gefüllt oder eine der Möglichkeiten war selbst erfolgreich, wird wahr zurückgegeben. Andernfalls werden die Änderungen rückgängig gemacht und Fehlschlag zurueckgegeben.}\;
 		$s \leftarrow s + z + 1$\;
-		$\ell(R) \leftarrow \ell(R) + b$\;
+		$\ell(R) \leftarrow \ell(R) + b$\myComment{Gleichung (\ref{eq:transodd})}\;
 		$R \leftarrow R\,\cup\,\{b\}$\;
 		\If{$s+z = w$}{
-			\Return \textbf{True}\;
+			\Return \textbf{True}\myComment{Abbruchbedingung: vollständige Mauer}\;
 		}
 		$r \leftarrow r - z$\;
 		$Z \leftarrow \left\{ 0,\ \dots,\ r \right\}$\;
-		\For{$(R',\ z')$ \KwTo $W \times Z$}{
-			$b' \leftarrow s + z' - \ell(R')$\Comment*[f]{Gl. (\ref{eq:bprime})}\;
+		\For(\myComment{Iteration über Möglichkeiten}){$(R',\ z')$ \KwTo $W \times Z$}{
+			$b' \leftarrow s + z' - \ell(R')$\myComment{Gleichung (\ref{eq:bprimeodd})}\;
 			\If{$b' \notin R'$}{
-				\If{\FMain{$R',\ b',\ z'$}}{
+				\If(\myComment{Rekursiver Funktionsaufruf}){\FMain{$R',\ b',\ z'$}}{
 					\Return \textbf{True}\;
 				}
 			}
 		}
 		$s \leftarrow s - 1$\;
 		$r \leftarrow r + z$\;
-		$R \leftarrow R\backslash\{b\}$\;
+		$R \leftarrow R\backslash\{b\}$\myComment{Rückgängigmachen der Änderungen}\;
 		$\ell(R) \leftarrow \ell(R) - b$\;
 		\Return \textbf{False}\;
 		}
