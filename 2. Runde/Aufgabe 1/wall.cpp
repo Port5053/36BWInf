@@ -1,10 +1,16 @@
+/**
+*	36. BWInf 1. Aufgabe
+*	Die Kunst der Fuge
+*	Kamal Abdellatif
+*/
+
 #include <algorithm>
 #include <iostream>
 #include <vector>
 #include <forward_list>
 #include <list>
 
-#ifdef IMAGE
+#ifdef IMAGE  // Makro fuer Bildausgabe
 #	include "CImg.h"
 #	ifndef GUI
 #		include <string>
@@ -26,25 +32,44 @@ public:
 	CImg<unsigned char> getImage() const;
 #endif
 	void printWall() const;
-	int n, width, height, slit, spaces;
+	int n,
+		width,  // Breite w
+		height,  // Hoehe h
+		slit,  // aktuelle Spalte s
+		spaces;  // r, dargestellt als Rest von Division
 
+	// 2D-Array fuer benutzte Steine (siehe Sektion 3.1)
 	std::vector< std::vector<bool> > usedBricks;
+
+	// Array fuer Laengen der Reihen nach Indices
 	std::vector<int> endpoints;
+
+	// Linked-List fuer Reihenfolge der Reihen
 	std::list<int> order;
+
+	// Speicher fuer Loesungen beim Backtracking
 	std::forward_list< std::pair<int, int> > solution;
+	// jedes Pair (i, z) besteht aus dem Index i der
+	// gefuellten Reihe i und den uebersprungenen Spalten z
 };
 
 Wall::Wall(int _n) {
 	/* Initialisiert eine Wand n mit allen Datenstrukturen*/
 	n = _n;
-	width = n*(n+1)/2;  // Breite w
-	height = n/2 + 1;  // Hoehe h
-	spaces = (width-1) % (n-1);  // r, dargestellt als Rest von Division
+	width = n*(n+1)/2;  
+	height = n/2 + 1;  // C++ uebernimmt floor durch Integer-Division
+	spaces = (width-1) % (n-1);  
+
 	usedBricks = std::vector< std::vector<bool> >(
 		height, std::vector<bool>(n, false));
+
+	// Laengen werden mit 0 initialisiert
 	endpoints = std::vector<int>(height, 0);
+
+	// Aufbau der aufsteigenden Reihenfolge
 	for (int i = 0; i < height; ++i)
 		order.push_back(i);
+
 	solution = std::forward_list< std::pair<int, int> >();
 	slit = 0;
 }
@@ -53,16 +78,17 @@ bool Wall::valid(const int& row, const int& skip) const {
 	/* Gibt zurueck ob der Schritt vom Anlegen in Reihe row mit
 	   skip Spruengen moeglich ist. */
 	int brick = slit + 1 + skip - endpoints.at(row);
-	if (brick > n)
+	if (brick > n)  // Stein zu lang
 		return false;
-	if (usedBricks.at(row).at(brick-1))
+	if (usedBricks.at(row).at(brick-1))  // Stein schon enthalten
 		return false;
 	return true;
 }
 
 int Wall::fill(const int& row, const int& skip) {
-	/* Fuegt einen Stein in die Reihe row an und aktualisiert
-	   die Laengen und Steinbelegungen . Gibt die Laenge b des
+	/* Fuegt einen Stein in die Reihe row mit Uberspringen
+	   von skip Spalten an und aktualisiert die Laengen
+	   und Steinbelegungen. Gibt die Laenge b des
 	   Steins zurueck. */
 	int brick = slit + 1 + skip - endpoints.at(row);
 	usedBricks.at(row).at(brick-1) = true;
@@ -73,6 +99,8 @@ int Wall::fill(const int& row, const int& skip) {
 }
 
 void Wall::pop(const int &row, const int& brick, const int& skip) {
+	/* Macht den letzten Schritt des Anfuegens des Steins brick an
+	   row mit ueberspringen von skip Spalten rueckgaenig. */
 	usedBricks.at(row).at(brick-1) = false;
 	endpoints.at(row) -= brick;
 	slit -= (1+skip);
@@ -80,10 +108,12 @@ void Wall::pop(const int &row, const int& brick, const int& skip) {
 }
 
 bool Wall::finished() const {
+	/* Gibt zurueck, ob die Wand vollstaendig gefuellt ist. */
 	return (slit == width);
 }
 #ifdef IMAGE
 CImg<unsigned char> Wall::getImage() const {
+	/* Ausgabe der Wand als Bild */
 	int size = std::min(TILE_SIZE, IMG_WIDTH/(int) width);
 	CImg<unsigned char> image(width*size+1, height*size+1, 1, 1, 0);
 
@@ -106,6 +136,7 @@ CImg<unsigned char> Wall::getImage() const {
 #endif
 
 void Wall::printWall() const {
+	/* Ausgabe der Wand als Text */
 	int end, slit;
 	for (int row = 0; row < height; ++row) {
 		end = 0;
@@ -125,34 +156,49 @@ void Wall::printWall() const {
 }
 
 bool pushSlit(Wall& wall, const int& row, const int& skip, bool first) {
+	/* Rekursive Funktion. Fuegt einen Stein an die Reihe mit Index row
+	   an und ueberspringt skip Spalten. Danach wird jede Folgemoeglichkeit
+	   eines Weiteren Steins getestet. Ist die Mauer wall dadurch gefuellt
+	   worden oder einer der Moeglichkeiten war selbst erfolgreich, wird wahr
+	   zurueckgegeben. Andernfalls werden die Aenderungen rueckgaenig gemacht
+	   und Fehlschlag zurueckgegeben. */
+
 	int brick, nextRow;
 	if (!first)
-		brick = wall.fill(row, skip);
-	if (wall.finished())
+		brick = wall.fill(row, skip);  // Fuellen der Reihe
+	if (wall.finished())  // Abbruchbedingung
 		return true;
-	std::list<int>::const_iterator next, place;
+
+	std::list<int>::const_iterator next, place;  // Pointer in Linked-List
+
+	// Iteration durch alle Sprunglaengen z (nextSkip)
 	for (int nextSkip = 0; nextSkip <= wall.spaces; ++nextSkip) {
+
+		// Iteration durch alle Reihen (next) nach Reihenfolge
 		for (next = wall.order.begin(); next != wall.order.end(); ++next) {
 			if (wall.valid(*next, nextSkip)) {
 				nextRow = *next;
-				place = wall.order.erase(next);
-				wall.order.push_back(nextRow);
+				place = wall.order.erase(next);  // Entfernen von R 
+				wall.order.push_back(nextRow);  // Anfuegen ans Ende
+
+				// Rekursiver Funktionsaufruf
 				if (pushSlit(wall, nextRow, nextSkip, false)) {
-					wall.solution.emplace_front(
+					wall.solution.emplace_front(  // Anfuegen an Loesung
 						std::make_pair(nextRow, nextSkip));
-					return true;
+					return true;  // Erfolg
 				}
-				wall.order.pop_back();
+				wall.order.pop_back();  // Wiederherstellung der Reihenfole
 				wall.order.insert(place, nextRow);
 			}
 		}
 	}
 	if (!first)
-		wall.pop(row, brick, skip);
-	return false;
+		wall.pop(row, brick, skip);  // Rueckgaenigmachen der Aenderungen
+	return false;  // Fehlschlag
 }
 
 bool solve(Wall& wall) {
+	/* Initialisierender Funktionsaufruf fuer Rekursion */
 	return (pushSlit(wall, 0, 0, true));
 }
 
