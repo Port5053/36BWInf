@@ -365,13 +365,14 @@ Die Reihenfolge wird am Anfang und Ende von jedem Schritt verändert. Dabei wird
 	\caption{Zeiger in der Linked-List während eines Schrittes}
 \end{figure}\vspace{-6pt}
 Die Längen $\ell(R)$ müssen nicht erst als Summe (\emph{siehe} \ref{eq:laenge}) der Steinlängen errechnet werden, da dies $\mathcal{O}(n)$ benötigen würde. Stattdessen werden die Längen in einem Array $endpoints[h]$ gespeichert, wobei $endpoints[i]$ die Länge $\ell(R)$ der Reihe mit Index $i$ darstellt. Am Anfang sind alle Reihen leer, sodass $endpoints$ mit 0 initialisiert wird. Wird ein Stein der Länge $b$ in der Reihe $R$ hinzugefügt oder entfernt, wird dies auf die Länge addiert beziehungsweise subtrahiert. Dies geschieht in $\mathcal{O}(1)$.
+\enlargethispage{3em}
 \begin{figure}[H]
 	\centering
 	\begin{tabular}{rcc}
 		Operation & \hspace{1cm} Menge $R$ \hspace{1cm} & Array $endpoints$ \\
 		\hline
 		Einfügen & $R \leftarrow R\cup\{b\}$ & $endpoints[i] \leftarrow endpoints[i] + b$ \\
-		Entfernen & $R \leftarrow R\backslash\{b\}$ & $endpoints[i] \leftarrow endpoints[i] - b$ \\
+		Entfernen & $R \leftarrow R\backslash\{b\}$ & $endpoints[i] \leftarrow endpoints[i] - b$
 	\end{tabular}
 \end{figure}
 \section{Laufzeit}
