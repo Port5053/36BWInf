@@ -1,0 +1,103 @@
+\documentclass[a4paper, 12pt]{scrartcl}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\usepackage{eurosym}
+
+\usepackage[hidelinks]{hyperref}
+\usepackage{float}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+
+\tikzstyle{arrow}=[-{Latex[length=3mm, width=1.8mm]}]
+
+\allowdisplaybreaks
+\newcommand{\tagyoureit}{\addtocounter{equation}{1}\tag{\theequation}}
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+\renewcommand{\labelenumii}{(\alph{enumii})}
+
+\setlength{\parindent}{0pt}
+
+\title{Aufgabe 2\\Wehret den Wildschweinen!\\Dokumentation}
+\author{Kamal Abdellatif}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Kritischer Pfad}
+Das Ziel der Erdarbeiten ist es, dass jeder Weg für ein Wildschwein vom Nordrand zum Südrand mindestens einmal einen Höhenunterschied von mehr als einem Meter beinhaltet. Der \emph{Weg} eines Wildschweins sei dabei die Abfolge von besuchten Planquadraten. Geht ein Wildschwein von einem Planquadrat zu einem benachbarten Planquadrat, überschreitet es dabei die \emph{Grenze} zwischen beiden Quadraten. Kann eine Grenze von einem Wildschwein nicht mehr bewältigt werden, da der Betrag der Höhendifferenz größer gleich einem Meter ist, handelt es sich um eine \emph{kritische} Grenze.
+
+Das Ziel ist genau dann erfüllt, wenn ein zusammenhängender Pfad aus kritischen Grenzen vom Linken zum rechten Feldrand besteht. Dieser Pfad ist der \emph{kritische} Pfad. Existiert ein solcher Pfad nicht, so gibt es immer einen Weg für ein Wildschwein, der durchgehend passierbar ist.
+\begin{figure}[H]
+	\centering\sffamily\Large
+	\begin{tikzpicture}[scale=.85]
+		\draw[very thick] (0, 0) rectangle (12, 6);
+		\draw[ultra thick] (0, 2) to (1, 2) to (1, 1) to (4, 1) to (4, 3) to (2, 3) to (2, 5) to (7, 5) to (7, 3) to (9, 3) to (9, 2) to (12, 2);
+		\path[arrow, shorten >=2mm, dashed, thick]
+			(2.5, 6) edge +(0, -1)
+			(3.5, 6) edge +(0, -1)
+			(3.5, 6) edge +(0, -1)
+			(4.5, 6) edge +(0, -1)
+			(5.5, 6) edge +(0, -1)
+			(6.5, 6) edge +(0, -1)
+			(0.5, 6) edge +(0, -4)
+			  (8, 6) edge[bend left=10] +(-.8, -3)
+			(8.5, 6) edge +(0, -3)
+			(9.5, 6) edge +(0, -4)
+			(10.5, 6) edge +(0, -4)
+			(11, 6) edge[bend right=10] (11.8, 2);
+		\draw[dashed, thick] (1.5, 6) edge +(0, -3.5);
+		\path[arrow, shorten >=2mm, dashed, thick] (1.5, 3)
+			edge[out=-90, in=90] (1.5, 1)
+			edge[out=-90, in=170] (4, 1.3)
+			edge[out=-90, in=190] (4, 2.5);
+		\node[above] at (6, 6) {N};
+		\node[right] at (12, 3) {O};
+		\node[below] at (6, 0) {S};
+		\node[left] at (0, 3) {W};
+		\end{tikzpicture}
+	\caption{Kritischer Pfad}
+\end{figure}
+Das Problem wird gelöst, indem ein kritischer Pfad mit minimalen Erdarbeiten konstruiert wird. Da beide Problemstellungen äquivalent sind, entspricht die minimale Lösung des kritischer Pfads der Lösung des ursprünglichen Problems.
+
+Ist ein gewählter Pfad noch nicht kritisch, so sind von Wildschweinen noch passierbare Grenzen enthalten. Um eine Lösung zu finden werden diese Grenzen durch Erdarbeiten in kritische Grenzen umgewandelt.
+\subsection{Umbau von Grenzen}
+Es seien zwei benachbarte Planquadrate der Höhen $a$ und $b$, deren gemeinsame Grenze nach Bearbeitung kritisch sein soll. Die zu erfüllende Bedingung lautet, dass der Betrag der Höhendifferenz $\Delta = |a-b|$ größer gleich 1 ist.\footnote{Die Einheiten Meter und Euro werden gleich 1 gesetzt. Es gilt $1 \mathrm{m} = 100\text{\euro} = 1$} Es sollen dabei nur Erdarbeiten bezüglich den beiden betrachteten Planquadrate unternommen werden. Um die Differenz zu erhöhen, ist es immer günstiger, den schon bestehenden Höhenunterschied zu vergrößern.
+\begin{figure}[H]
+	\vspace{5cm}
+	\caption{Umschaufeln zur kritischen Kante}
+\end{figure}
+Dazu wird Erde vom niedrigeren Quadrat $a$ (o.\,B.\,d.\,A) zum höheren Quadrat $b$ geschaufelt. Wurden $w$ Erdarbeiten auf diese Weise verrichtet, gilt für die jeweiligen Höhen $a'$ und $b'$ nach verrichteter Arbeit
+\begin{equation*}
+	a' = a - w \qquad b' = b + w
+\end{equation*}
+Um die genannte Bedingung zu erfüllen, muss für die neue Differenz $\Delta'$ gelten
+\begin{align*}
+	 1&\le \Delta'  \\
+	 &\le b' - a' \tag{$b' > a'$}\\
+	 &\le (b+w) - (a - w)\\
+	 2w &\le 1 - (b-a)\\
+	 w &\le \frac{1}{2}(1 - \Delta) \tagyoureit\label{eq:arbeit}
+\end{align*}
+\begin{figure}[H]
+	\centering
+	\vspace{4cm}
+	\caption{Benötigte Erdarbeiten $w$ in Abh. von $\Delta$}
+\end{figure}
+Aus letzerer Gleichung folgt die minimale Menge an Erdarbeiten zum Umbauen einer Grenze mit Höhenunterschied $\Delta$ zu einer kritischen Grenze.
+\subsection{Pfad-Heuristik}
+Zur Minimierung der Kosten wird der Pfad gewählt, der am wenigsten Gesamt-Erdarbeiten erfordert um kritisch zu werden. Es bietet sich an, die gesamten Erdarbeiten als Summe der einzeln benötigten Arbeiten aller Grenzen nach Gleichung (\ref{eq:arbeit}) zu errechnen. Allerdings gilt dies nur unter der Annahme, dass einzelne Erdarbeiten an verschiedenen Grenzen unabhängig voneinander sind. Leider ist dies nicht der Fall. Liegen zwei Grenzen am selben Planquadrat an, tritt einer von zwei Fällen auf:
+\begin{enumerate}
+	\item Die jeweiligen Erdarbeiten der Grenzen entnehmen beide dem Planquadrat Erde oder fügen ihm beide Erde hinzu.
+	\item Eine Grenze entnimmt Erde, während die andere Erde hinzufügt.
+\end{enumerate}
+Im ersten Fall wird überflüssige Arbeit verrichtet: Nach dem ersten Umschaufeln liegt das Quadrat bereits weiter in der erwünschten Richtung der zweiten Grenze, sodass weniger Erde umgeschaufelt werden muss. Im zweiten Fall kommt es zu einem Interessenkonflikt, durch welchen nach Tätigung beider Arbeiten nicht garantiert werden kann, dass nun beide kritisch sind. Es muss mehr Erdarbeit verrichtet werden, da geschaufelte Erde für eine Grenze mehr Arbeit für die Andere bedeutet.
+
+\end{document}

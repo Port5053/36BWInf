@@ -405,7 +405,7 @@ Da die $h!$ Permutationen gleichverteilt sind, muss schon im ersten $\frac{1}{h!
 \begin{equation*}
 	\frac{(nh)^h}{h!}
 \end{equation*}
-Da $h$ nach Gleichung (\ref{eq:evenheight}) proportional zu $n$ ist, kann für die asymptotische Betrachtung $h$ durch $n$ substituiert werden, da dies nur zu einer Streckung des Eingaberaums führt. Da $h < n$ ist dies im Sinne der Laufzeitbetrachtung. Es ergibt sich
+Da $h$ nach Gleichung (\ref{eq:evenheight}) proportional zu $n$ ist, wird für die asymptotische Betrachtung $h$ durch $n$ substituiert. Da $h < n$ ist dies im Sinne der Laufzeitbetrachtung. Es ergibt sich
 \renewcommand{\thefootnote}{$\dagger$}
 \begin{align*}
 	\mathcal{O} \left( \frac{(nh)^h}{h!} \right) &= \mathcal{O} \left( \frac{(n \cdot n)^{\frac{1}{2}n+1}}{n!} \right) = \mathcal{O} \left( \frac{n^{n+2}}{n!} \right) \\
@@ -444,7 +444,7 @@ Die Heuristik ist ab $n=6$ deutlich schneller als der normale Algorithmus. Das h
 \enlargethispage{2em}
 \newpage
 \subsection{Speicherkomplexität}
-Speicherplatz wird hauptsächlich durch die Arrays $usedBricks$, $endpoints$ und $order$ eingenommen (\emph{siehe} Sektion \ref{subsec:datenstrukturen}). Die restlichen Variablen wie Breite, Höhe und Spalte benötigen $\mathcal{O}(1)$ Speicher. Sowohl $endpoints$ als auch $order$ haben $h$ Einträge. Da die Höhe $h$ sich proportional zu $n$ verhält besitzen beide Arrays Speicherkomplexität $\mathcal{O}(n)$. Das Array $usedBricks$ ist zweidimensional, da es als Einträge $h$boolesche Arrays der Größe $n$ besitzt. Als Komplexität ergibt sich
+Speicherplatz wird hauptsächlich durch die Arrays $usedBricks$, $endpoints$ und $order$ eingenommen (\emph{siehe} Sektion \ref{subsec:datenstrukturen}). Die restlichen Variablen wie Breite, Höhe und Spalte benötigen $\mathcal{O}(1)$ Speicher. Sowohl $endpoints$ als auch $order$ haben $h$ Einträge. Da die Höhe $h$ sich proportional zu $n$ verhält besitzen beide Arrays Speicherkomplexität $\mathcal{O}(n)$. Das Array $usedBricks$ ist zweidimensional, da es als Einträge $h$ boolesche Arrays der Größe $n$ besitzt. Als Komplexität ergibt sich
 \begin{equation*}
 	\mathcal{O}(h \cdot n) = \mathcal{O}(n^2)
 \end{equation*}
