@@ -8,12 +8,13 @@
 \usepackage{amsmath}
 
 \usepackage{eurosym}
+\usepackage{framed}
 
 \usepackage[hidelinks]{hyperref}
 \usepackage{float}
 
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta}
+\usetikzlibrary{arrows, arrows.meta, patterns}
 
 \tikzstyle{arrow}=[-{Latex[length=3mm, width=1.8mm]}]
 
@@ -34,7 +35,7 @@
 \section{Kritischer Pfad}
 Das Ziel der Erdarbeiten ist es, dass jeder Weg für ein Wildschwein vom Nordrand zum Südrand mindestens einmal einen Höhenunterschied von mehr als einem Meter beinhaltet. Der \emph{Weg} eines Wildschweins sei dabei die Abfolge von besuchten Planquadraten. Geht ein Wildschwein von einem Planquadrat zu einem benachbarten Planquadrat, überschreitet es dabei die \emph{Grenze} zwischen beiden Quadraten. Kann eine Grenze von einem Wildschwein nicht mehr bewältigt werden, da der Betrag der Höhendifferenz größer gleich einem Meter ist, handelt es sich um eine \emph{kritische} Grenze.
 
-Das Ziel ist genau dann erfüllt, wenn ein zusammenhängender Pfad aus kritischen Grenzen vom Linken zum rechten Feldrand besteht. Dieser Pfad ist der \emph{kritische} Pfad. Existiert ein solcher Pfad nicht, so gibt es immer einen Weg für ein Wildschwein, der durchgehend passierbar ist.
+Das Ziel ist genau dann erfüllt, wenn mindestens ein zusammenhängender Pfad aus kritischen Grenzen vom Linken zum rechten Feldrand besteht. Ein solcher Pfad ist ein \emph{kritischer} Pfad. Existiert kein kritischer Pfad, so gibt es immer einen Weg für ein Wildschwein, der durchgehend passierbar ist.
 \begin{figure}[H]
 	\centering\sffamily\Large
 	\begin{tikzpicture}[scale=.85]
@@ -71,7 +72,20 @@ Ist ein gewählter Pfad noch nicht kritisch, so sind von Wildschweinen noch pass
 \subsection{Umbau von Grenzen}
 Es seien zwei benachbarte Planquadrate der Höhen $a$ und $b$, deren gemeinsame Grenze nach Bearbeitung kritisch sein soll. Die zu erfüllende Bedingung lautet, dass der Betrag der Höhendifferenz $\Delta = |a-b|$ größer gleich 1 ist.\footnote{Die Einheiten Meter und Euro werden gleich 1 gesetzt. Es gilt $1 \mathrm{m} = 100\text{\euro} = 1$} Es sollen dabei nur Erdarbeiten bezüglich den beiden betrachteten Planquadrate unternommen werden. Um die Differenz zu erhöhen, ist es immer günstiger, den schon bestehenden Höhenunterschied zu vergrößern.
 \begin{figure}[H]
-	\vspace{5cm}
+	\centering
+	\begin{tikzpicture}
+		\clip (-1, 0) rectangle (6, 5);
+		\draw[very thick] (0, 0) -- ++(0, 2) -- node[below=5mm] {$a$} ++(2, 0) -- (2, 0) -- ++(0, 3) -- node[below=5mm] {$b$} ++(2, 0) -- (4, 0);
+		\draw[|-|] (-.5, 2) -- node[right] {$\Delta$} +(0, 1);
+	\end{tikzpicture}
+	\begin{tikzpicture}
+		\clip (-1, 0) rectangle (6, 5);
+		\draw[very thick, dashed] (0, 0) -- ++(0, 2) -- ++(2, 0) -- (2, 0) -- ++(0, 3) -- ++(2, 0) -- (4, 0);
+		\draw[very thick] (0, 0) -- ++(0, 1) -- node[below=5mm] {$a'$} ++(2, 0) -- (2, 0) -- ++(0, 4) -- node[above=5mm] {$b'$} ++(2, 0) -- (4, 0);
+		\draw[-{angle 60}, line width=1mm] (1, 1.5) to[out=90, in=110, looseness=2] (3, 3.5);
+		\draw[|-|] (4.5, 1) -- node[right] {$\Delta' \ge 1$} +(0, 3);
+		\node at (1.2, 4) {$w$};
+	\end{tikzpicture}
 	\caption{Umschaufeln zur kritischen Kante}
 \end{figure}
 Dazu wird Erde vom niedrigeren Quadrat $a$ (o.\,B.\,d.\,A) zum höheren Quadrat $b$ geschaufelt. Wurden $w$ Erdarbeiten auf diese Weise verrichtet, gilt für die jeweiligen Höhen $a'$ und $b'$ nach verrichteter Arbeit
@@ -88,16 +102,160 @@ Um die genannte Bedingung zu erfüllen, muss für die neue Differenz $\Delta'$ g
 \end{align*}
 \begin{figure}[H]
 	\centering
-	\vspace{4cm}
-	\caption{Benötigte Erdarbeiten $w$ in Abh. von $\Delta$}
+	\begin{tikzpicture}
+		\draw[-{Latex[length=3mm]}] (0, -1) to (0, 2.5) node[above] {$w$};
+		\draw[-{Latex[length=3mm]}] (-5, 0) to (5, 0) node[right] {$(a-b)$};
+		\draw (-2, .1) to +(0, -.2) node[below] {$-1$};
+		\draw  (2, .1) to +(0, -.2) node[below] {$1$};
+		\draw[very thick, shorten >=2mm] (-5, 0) -- (-2, 0) -- (0, 1.5) -- (2, 0) -- (5, 0);
+		\draw[dashed, thick] (-4, 1.5) -- (4, 1.5) node[right] {$\displaystyle w_{max}=\frac{1}{2}$};
+	\end{tikzpicture}
+	\caption{Benötigte Erdarbeiten $w$ in Abh. von der Höhendifferenz}
 \end{figure}
 Aus letzerer Gleichung folgt die minimale Menge an Erdarbeiten zum Umbauen einer Grenze mit Höhenunterschied $\Delta$ zu einer kritischen Grenze.
 \subsection{Pfad-Heuristik}
-Zur Minimierung der Kosten wird der Pfad gewählt, der am wenigsten Gesamt-Erdarbeiten erfordert um kritisch zu werden. Es bietet sich an, die gesamten Erdarbeiten als Summe der einzeln benötigten Arbeiten aller Grenzen nach Gleichung (\ref{eq:arbeit}) zu errechnen. Allerdings gilt dies nur unter der Annahme, dass einzelne Erdarbeiten an verschiedenen Grenzen unabhängig voneinander sind. Leider ist dies nicht der Fall. Liegen zwei Grenzen am selben Planquadrat an, tritt einer von zwei Fällen auf:
+\label{subsec:heuristik}
+Zur Minimierung der Kosten wird der Pfad gewählt, der am wenigsten Gesamt-Erdarbeiten erfordert um kritisch zu werden. Es bietet sich an, die gesamten Erdarbeiten als Summe der einzeln benötigten Arbeiten aller Grenzen nach Gleichung \eqref{eq:arbeit} zu errechnen. Allerdings gilt dies nur unter der Annahme, dass einzelne Erdarbeiten an verschiedenen Grenzen unabhängig voneinander sind. Leider ist dies nicht der Fall. Liegen zwei Grenzen am selben Planquadrat an, tritt einer von zwei Fällen auf:
 \begin{enumerate}
 	\item Die jeweiligen Erdarbeiten der Grenzen entnehmen beide dem Planquadrat Erde oder fügen ihm beide Erde hinzu.
 	\item Eine Grenze entnimmt Erde, während die andere Erde hinzufügt.
 \end{enumerate}
 Im ersten Fall wird überflüssige Arbeit verrichtet: Nach dem ersten Umschaufeln liegt das Quadrat bereits weiter in der erwünschten Richtung der zweiten Grenze, sodass weniger Erde umgeschaufelt werden muss. Im zweiten Fall kommt es zu einem Interessenkonflikt, durch welchen nach Tätigung beider Arbeiten nicht garantiert werden kann, dass nun beide kritisch sind. Es muss mehr Erdarbeit verrichtet werden, da geschaufelte Erde für eine Grenze mehr Arbeit für die Andere bedeutet.
 
+\begin{minipage}[t]{.45\textwidth}
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}
+			\clip (0, .2) rectangle (6, 4.7);
+			\draw[very thick]
+				(0, 0) rectangle (2, 1)
+				(2, 0) rectangle (4, 3)
+				(4, 0) rectangle (6, 2);
+			\draw[white, very thick] (0, 0) -- (6, 0);
+			\draw[-{angle 60}, shorten >=2mm, line width=1mm] (1, .75) to[out=90, in=110, looseness=1.8] (2.8, 3.5);
+			\draw[-{angle 60}, shorten >=2mm, line width=1mm] (5, 1.75) to[out=90, in=80, looseness=1.8] (3.2, 3.5);
+			\draw[very thick, dashed] (0, .5) -- +(2, 0) (4, 1.5) -- +(2, 0) (2, 3) rectangle +(2, 1);
+		\end{tikzpicture}
+		\caption{Fall (1)}\label{fig:fall1}
+	\end{figure}
+\end{minipage}\hfill
+\begin{minipage}[t]{.45\textwidth}
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}
+			\clip (0, .2) rectangle (6, 4.7);
+			\draw[very thick]
+				(0, 0) rectangle (2, 1)
+				(2, 0) rectangle (4, 1.7)
+				(4, 0) rectangle (6, 3);
+			\draw[white, very thick] (0, 0) -- (6, 0);
+			\draw[-{angle 60}, shorten >=2mm, line width=1mm] (1, .75) to[out=90, in=110, looseness=1.8] (2.8, 2.5);
+			\draw[-{angle 60}, shorten <=2mm, line width=1mm] (3.2, 2.5) to[out=90, in=110, looseness=1.8] (5, 3.25);
+			\draw[very thick, dashed] (0, .5) -- +(2, 0) (4, 3) rectangle +(2, .5);
+			\fill[pattern=north east lines] (2, 1.7) rectangle +(2, .8);
+			\draw[dashed, very thick] (2, 1.7) rectangle +(2, .8);
+			\node[fill=white, inner sep=1mm] at (3, 2.1) {\bfseries\large!};
+		\end{tikzpicture}
+		\caption{Fall (2)}\label{fig:fall2}
+	\end{figure}
+\end{minipage}
+Die Summe der einzelnen Erdarbeiten kann nicht als exaktes Maß für die benötigten Erdarbeiten zur Umsetzung eines Pfades gewählt werden. Stattdessen wird diese Größe als Heuristik verwendet werden, um verschiedene Pfade gegeneinander abzuwägen.
+\begin{framed}
+	Die Heuristik wählt den Pfad von Westrand zu Ostrand, welcher die geringste Summe an Erdarbeiten für die einzelnen Grenzen aufweist. Dieser Pfad ist der \emph{minimale} Pfad.
+\end{framed}
+Dies erzeugt nicht notwendigerweise die optimale Lösung, läuft aber dafür in akzeptabler Laufzeit. Genaueres zur optimalen Lösung siehe Sektion (?).%TODO DO ME
+
+Das Problem des minimalen Pfads wird in einen Graphen $G(V,\ E)$ eingebettet. Jede Kante stellt eine Grenze auf dem Brachland dar. Die Knoten liegen auf den Eckpunkten der Planquadrate. Da die Ränder abgezäunt sind, werden Grenzen vernachlässigt, die direkt am West- oder Ostrand anliegen. Der Nord- und Südrand des Brachlandes wird für die Wildschweine immer als passierbar angenommen: Jedes Wildschwein startet auf einem Planquadrat am Nordrand und läuft zu einem Planquadrat am Südrand. Somit fallen auch Grenzen weg, welche inzident zu mindestens einem Knoten am Rand sind.\\
+
+Die Gewichtung $w(e)$ für jede Kante $e \in E$ entspricht den nach Gleichung (\ref{eq:arbeit}) benötigten Erdarbeiten zum Umbau zu einer kritischen Grenze. Die \emph{Länge} eines Pfads innerhalb des Graphen $G$ entspricht demnach der Summe der Einzel-Erdarbeiten. Der minimalen Pfad von Westrand zum Ostrand ist der kürzeste Pfad von einem Knoten am Westrand zu einem Knoten am Ostrand im Graphen.
+
+Es werden zwei virtuelle Knoten $s$ und $t$ mit einer Kante an alle Knoten des Westrandes beziehungweise des Ostrandes angefügt. Die Gewichtung dieser Kanten sei 0. Auf diese Weise wurde das Problem auf den kürzesten Pfad vom Knoten $s$ zu Knoten $t$ reduziert.
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[scale=.8, thick]
+		\draw[line width=1mm, opacity=.2] (-1, -1) rectangle (6, 5);
+		\node[above] at (2.5, 5) {\sffamily N};
+		\node[below] at (2.5, -1) {\sffamily S};
+		\node[draw, circle, inner sep=3pt] (s) at (-4, 2) {$s$};
+		\node[draw, circle, inner sep=3pt] (t) at (9, 2) {$t$};
+		\foreach \x in {0,...,5}{
+			\draw (\x, 0) -- (\x, 4);
+			% \draw[line width=1mm, opacity=.2] (\x, -1) -- (\x, 5);  % Grid lines
+		}
+		\foreach \y in {0,...,4}{
+			\draw[dashed] (s) -- (-1, \y) (6, \y) -- (t);
+			\draw (-1, \y) -- (6, \y);
+			% \draw[line width=1mm, opacity=.2] (-1, \y) -- (6, \y);
+		}
+		\foreach \x in {-1,...,6}{
+			\foreach \y in {0,...,4}{
+				\draw[fill=white] (\x, \y) circle (2mm);
+			}
+		}
+	\end{tikzpicture}
+	\caption{Einbettung in einen Graphen}
+\end{figure}
+Um den kürzesten Pfad zu erhalten, wird \textsc{Dijkstra}'s Algorithmus\cite{dijkstra} für den kürzesten Pfad im ungerichteten kanten-gewichteten Graphen auf $G$ angewendet.
+\section{Dualgraph}
+Ist durch die Heuristik ein minimaler Pfad ermittelt worden, gilt es diesen umzubauen, sodass ein kritischer Pfad entsteht. Die dazu unternommenen Erdarbeiten sollen dabei folgende Ziele verfolgen: (siehe Sektion \ref{subsec:heuristik})
+\begin{enumerate}
+	\item Ausnutzen von begünstigenden Umständen
+	\item Lösen von eventuellen Konflikten
+\end{enumerate}
+Um die genannten Fälle zu erkennen und umzusetzen, wird ein Dualgraph erzeugt. In diesem Graphen werden die Relationen zwischen voneinander abhängigen Erdarbeiten dargestellt, welche von der Heuristik bisher vernachlässigt wurden.
+
+Alle Erdarbeiten sollen zur Vereinfachung nur über Grenzen des gewählten Pfades getätigt werden. Demnach finden Veränderungen nur in den am Pfad direkt anliegenden Planquadraten statt.\footnote{Der Einbezug außen liegender Quadrate erweist sich in Sonderfällen zwar als günstiger, bedeutet aber unverhältnismäßig mehr Komplexität in die Lösung des Problems. Mehr zu Sonderfällen in Sektion (?)} % TODO
+
+Alle am Pfad anliegenden Planquadrate sind in einem Knoten im Dualgraphen repräsentiert. Liegt die Grenze zwischen zwei benachbarten Quadraten auf dem Pfad, so wird eine gerichtete Kante zwischen den jeweiligen Knoten im Dualgraph gezogen. Die Richtung der Kante zeigt dabei immer vom niedrigeren Quadrat zum höheren Quadrat. 
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[scale=1.5, thick]
+		\foreach \x in {0,...,5}{
+			\draw[opacity=.2] (\x, -.25) -- (\x, 4.25);
+		}
+		\foreach \y in {0,...,4}{
+			\draw[opacity=.2] (-.25, \y) -- (5.25, \y);
+		}
+		\foreach \pos in {(0, 0), (1, 0), (1, 1), (1, 2), (3, 2)}{
+			\draw[very thick, -{latex}, shorten >=3mm] \pos++(.5, .5) to ++(0, 1);
+		}
+		\draw[very thick, {latex}-, shorten <=3mm] (2, 2)++(.5, .5) to ++(0, 1);
+		\draw[very thick, {latex}-, shorten <=3mm] (4, 1)++(.5, .5) to ++(0, 1);
+		\foreach \pos in {(0, 0), (1, 1), (0, 2), (3, 2)}{
+			\draw[very thick, -{latex}, shorten >=3mm] \pos++(.5, .5) to ++(1, 0);
+		}
+		\draw[line width=1mm] (-.5, 1) to (2, 1) to (2, 2) to (1, 2) to (1, 3) to (4, 3) to (4, 2) to (5.5, 2);
+		\foreach \pos in {(0, 0), (0, 1), (1, 0), (1, 1), (2, 1), (0, 2), (1, 2), (2, 2), (3, 2), (4, 2), (4, 1), (1, 3), (2, 3), (3, 3)}{
+			\draw[fill=white] \pos++(.5, .5) circle (2mm);
+		}
+	\end{tikzpicture}
+	\caption{Kritischer Pfad mit entsprechendem Dualgraph}
+\end{figure}
+Die naiven Erdarbeiten, von welchen in der Heuristik ausgegangen wurden, sind im Dualgraph wiedererkennbar: Da die Arbeit an einer Grenze immer in Richtung des schon bestehenden Gefälle stattfindet, zeigen die Kanten direkt Richtung der Erdarbeiten, die an jeder Grenze geplant waren. Für Knoten bedeuten eingehende Kanten Zugeschaufelte, ausgehende Kanten abgetragene Erde.
+Der Dualgraph ist meist nicht zusammenhängend. Unverbundene Teile des Graphen haben keinerlei Relation zwischeneinander, sodass sie unabhängig betrachtet werden können.
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[scale=1.5, thick]
+		\foreach \pos in {(0, 0), (1, 0), (1, 1), (1, 2), (3, 2)}{
+			\draw[very thick, -{latex}, shorten >=3mm] \pos++(.5, .5) to ++(0, 1);
+		}
+		\draw[very thick, {latex}-, shorten <=3mm] (2, 2)++(.5, .5) to ++(0, 1);
+		\draw[very thick, {latex}-, shorten <=3mm] (4, 1)++(.5, .5) to ++(0, 1);
+		\foreach \pos in {(1, 1), (0, 2), (3, 2)}{
+			\draw[very thick, -{latex}, shorten >=3mm] \pos++(.5, .5) to ++(1, 0);
+		}
+		\foreach \pos in {(0, 0), (0, 1), (1, 0), (1, 1), (2, 1), (0, 2), (1, 2), (2, 2), (3, 2), (4, 2), (4, 1), (1, 3), (2, 3), (3, 3)}{
+			\draw[fill=white] \pos++(.5, .5) circle (2mm);
+		}
+	\end{tikzpicture}
+	\caption{Unabhängige Teilgraphen}
+\end{figure}
+\newpage
+\section*{Anhang}
+\begin{thebibliography}{9}
+\bibitem{dijkstra}
+	Skiena, S., \textsc{Dijkstra’s algorithm}, S. 225--227,\\
+  \emph{Implementing Discrete Mathematics: Combinatorics and Graph Theory with Mathematica, Reading, MA: Addison-Wesley},
+  1990
+\end{thebibliography}
 \end{document}
