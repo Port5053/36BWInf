@@ -118,12 +118,12 @@ CImg<unsigned char> Wall::getImage() const {
 	CImg<unsigned char> image(width*size+1, height*size+1, 1, 1, 0);
 
 	std::vector<int> xpos(height, 0);
-	int slit = 1;
+	int slit = 0;
 	for (const auto& pair : solution) {
+		slit += (1+pair.second);
 		image.draw_rectangle(size*xpos.at(pair.first)+1, size*pair.first+1,
 			size*slit-1, size*(pair.first+1)-1, FOREGROUND);
 		xpos.at(pair.first) = slit;
-		slit += (1+pair.second);
 	}
 	for (int y = 0; y < height; ++y) {
 		if (xpos.at(y) < width)
@@ -140,13 +140,13 @@ void Wall::printWall() const {
 	int end, slit;
 	for (int row = 0; row < height; ++row) {
 		end = 0;
-		slit = 1;
+		slit = 0;
 		for (auto pair : solution) {
+			slit += (1+pair.second);
 			if (pair.first == row) {
 				std::cout << slit - end << " ";
 				end = slit;
 			}
-			slit += (1+pair.second);
 		}
 		if (end < width)
 			std::cout << width - end << std::endl;
