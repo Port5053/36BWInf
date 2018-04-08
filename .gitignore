@@ -6,6 +6,7 @@
 *.aux
 *.fls
 *.out
+*.txt
 2.\ Runde/Aufgabe\ 1/solutions/{2..17}.png
 2.\ Runde/Aufgabe\ 1/allSolutions/2. Runde/Aufgabe 1/wallimg
 2.\ Runde/Aufgabe 1/{wall,wallgui,wallimg}

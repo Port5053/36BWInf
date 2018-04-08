@@ -172,7 +172,7 @@ Die Gewichtung $w(e)$ für jede Kante $e \in E$ entspricht den nach Gleichung (\
 Es werden zwei virtuelle Knoten $s$ und $t$ mit einer Kante an alle Knoten des Westrandes beziehungweise des Ostrandes angefügt. Die Gewichtung dieser Kanten sei 0. Auf diese Weise wurde das Problem auf den kürzesten Pfad vom Knoten $s$ zu Knoten $t$ reduziert.
 \begin{figure}[H]
 	\centering
-	\begin{tikzpicture}[scale=.8, thick]
+	\begin{tikzpicture}[scale=.78, thick]
 		\draw[line width=1mm, opacity=.2] (-1, -1) rectangle (6, 5);
 		\node[above] at (2.5, 5) {\sffamily N};
 		\node[below] at (2.5, -1) {\sffamily S};
@@ -195,7 +195,7 @@ Es werden zwei virtuelle Knoten $s$ und $t$ mit einer Kante an alle Knoten des W
 	\end{tikzpicture}
 	\caption{Einbettung in einen Graphen}
 \end{figure}
-Um den kürzesten Pfad zu erhalten, wird \textsc{Dijkstra}'s Algorithmus\cite{dijkstra} für den kürzesten Pfad im ungerichteten kanten-gewichteten Graphen auf $G$ angewendet.
+Um den kürzesten Pfad zu erhalten, wird \textsc{Dijkstra}'s Algorithmus\cite{dijkstra} für den kürzesten Pfad im ungerichteten kanten-gewichteten Graphen auf $G$ angewendet. Die minimalen Pfade zu den vorgegebenen Beispielen sind im Anhang \eqref{app:paths} beigefügt.
 \section{Dualgraph}
 Ist durch die Heuristik ein minimaler Pfad ermittelt worden, gilt es diesen umzubauen, sodass ein kritischer Pfad entsteht. Die dazu unternommenen Erdarbeiten sollen dabei folgende Ziele verfolgen: (siehe Sektion \ref{subsec:heuristik})
 \begin{enumerate}
@@ -231,7 +231,6 @@ Alle am Pfad anliegenden Planquadrate sind in einem Knoten im Dualgraphen reprä
 	\end{tikzpicture}
 	\caption{Kritischer Pfad mit entsprechendem Dualgraph}
 \end{figure}
-Die naiven Erdarbeiten, von welchen in der Heuristik ausgegangen wurden, sind im Dualgraph wiedererkennbar: Da die Arbeit an einer Grenze immer in Richtung des schon bestehenden Gefälle stattfindet, zeigen die Kanten direkt Richtung der Erdarbeiten, die an jeder Grenze geplant waren. Für Knoten bedeuten eingehende Kanten Zugeschaufelte, ausgehende Kanten abgetragene Erde.
 Der Dualgraph ist meist nicht zusammenhängend. Unverbundene Teile des Graphen haben keinerlei Relation zwischeneinander, sodass sie unabhängig betrachtet werden können.
 \begin{figure}[H]
 	\centering
@@ -250,12 +249,191 @@ Der Dualgraph ist meist nicht zusammenhängend. Unverbundene Teile des Graphen h
 	\end{tikzpicture}
 	\caption{Unabhängige Teilgraphen}
 \end{figure}
+Es gilt im Folgenden, einen einzelnen zusammenhängenden Teilgraphen von Konflikten zu befreien.
+\subsection{Konfliktlösung}
+Die naiven Erdarbeiten, von welchen in der Heuristik ausgegangen wurden, sind im Dualgraph wiedererkennbar: Da die Arbeit an einer Grenze immer in Richtung des schon bestehenden Gefälle stattfindet, zeigen die Kanten direkt Richtung der Erdarbeiten, die an jeder Grenze geplant waren. Für Knoten bedeuten eingehende Kanten Zugeschaufelte, ausgehende Kanten abgetragene Erde.
+
+Knoten, welche sowohl eingehende als auch ausgehende Kanten haben, bergen Konflikte. Knoten hingegen, die ausschließlich indizent zu ein- oder ausgehenden Kanten sind, ermöglichen Einsparungen in Erdarbeiten.
+
+\begin{minipage}[t]{.45\textwidth}
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[very thick]
+			\node[draw, circle, minimum width=1cm] (n) at (0, 0) {};
+			\path[-{Latex[width=2.5mm, length=4mm]}]
+			(-2, 0) edge (n)
+			(0, -2) edge (n)
+			(0, 2) edge (n)
+			(2, 0) edge (n);
+		\end{tikzpicture}
+		\caption{Konfliktfreier Knoten (Fall 1)}
+	\end{figure}
+\end{minipage}\hfill
+\begin{minipage}[t]{.45\textwidth}
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}[very thick]
+			\node[draw, circle, minimum width=1cm] (n) at (0, 0) {};
+			\path[-{Latex[width=2.5mm, length=4mm]}]
+			(-2, 0) edge (n)
+			(n) edge (2, 0)
+			(0, 2) edge (n)
+			(n) edge (0, -2);
+		\end{tikzpicture}
+		\caption{Knoten mit konfliktierenden Kanten (Fall 2)}
+	\end{figure}
+\end{minipage}
+\newpage
+\paragraph{Eigenschaften eines konfliktfreien Graphs}
+Ein vollständig konfliktfreier Graph besteht nur aus Knoten von Fall (1): Jeder Knoten besitzt entweder nur eingehende oder ausgehende Kanten. Die Ausrichtung der Kanten sei dabei die \emph{Ausrichtung} des Knoten. Es können zwei adjazente Knoten nicht beide eingehend oder ausgehend sein, da die geteilte Kante immer entgegengesetzte Ausrichtungen impliziert.
+\begin{framed}
+	Adjazente Knoten besitzen verschiedene Ausrichtungen.
+\end{framed}
+Der Graph muss demnach 2-knotenfärbbar sein. Dass dies immer der Fall ist wird in Sektion \eqref{par:faerbung} dargelegt.
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[scale=1.5, thick]
+		\foreach \pos in {(0, 0), (2, 2), (1, 1)}{
+			\draw[very thick, -{latex}, shorten >=3mm] \pos to ++(0, 1);
+		}
+		\foreach \pos in {(1, 2), (1, 0), (3, 2), (4, 1)}{
+			\draw[very thick, {latex}-, shorten <=3mm] \pos to ++(0, 1);
+		}
+		\foreach \pos in {(1, 1), (0, 2), (2, 2)}{
+			\draw[very thick, -{latex}, shorten >=3mm] \pos to ++(1, 0);
+		}
+		\foreach \pos in {(0, 1), (1, 2), (3, 2)}{
+			\draw[very thick, {latex}-, shorten <=3mm] \pos to ++(1, 0);
+		}
+		\foreach \pos in {(0, 0), (1, 1), (0, 2), (2, 2), (4, 2), (1, 3), (3, 3)}{
+			\draw[fill=blue!20] \pos circle (2mm);
+		}
+		\foreach \pos in {(0, 1), (1, 0), (2, 1), (1, 2), (3, 2), (4, 1), (2, 3)}{
+			\draw[fill=red!20] \pos circle (2mm);
+		}
+	\end{tikzpicture}
+	\caption{2-Färbung eines konfliktfreien Graphs}
+\end{figure}
+\paragraph{Bearbeitung durch Kantendrehung}
+Um einen solchen Zustand ausgehend von einem konfliktierten Graphen zu erreichen müssen Kanten in ihrer Ausrichtung verändert werden. Genauer, kehrt sich die Richtung einer Kante $(a, b)$ um zu der Kante $(b, a)$, so sei diese Kante \emph{gedreht}.
+
+Die Drehung einer Kante erfordert Erdarbeiten. Da danach das Gefälle umgekehrt ist, muss zusätzlich Arbeit verrichtet werden, das vorherige Gefälle auszugleichen, bevor das entgegen gesetzte Gefälle geschaufelt wird. Das Ausgleichen der Differenz $\Delta$ kostet dabei $\frac{1}{2}\Delta$, und das Aufschaufeln der neuen Differenz von 1 kostet $\frac{1}{2}$. Somit gilt für die zusätzliche Erdarbeit $\delta w$
+\begin{align*}
+	w + \delta w &= \frac{1}{2}\Delta + \frac{1}{2} \\
+	\frac{1}{2}(1 - \Delta) + \delta w &= \frac{1}{2}(1 + \Delta) \\
+	\delta w &= \Delta \tagyoureit\label{eq:deltaw}
+\end{align*}
+
+Es sind immer zwei verschiedene Färbungen möglich, die das jeweilige Komplimentär des Anderen sind. Je nach Färbung werden unterschiedliche Kanten gedreht, welche nach Gleichung \eqref{eq:deltaw} verschiedene Mengen an Erdarbeit hinzufügen. Es wird die Färbung gewählt, die die geringere Summe an zusätzlichen Arbeiten benötigt.
+\paragraph{2-Färbung des Graphen}
+\label{par:faerbung}
+Für die 2-Färbung eines Graphen $G(V,\ E)$ müssen alle Knoten in einer von zwei disjunkten Mengen $S_0,\ S_1 \subseteq V$ enthalten sein, wobei keine zwei adjazenten Knoten in der selben Menge enthalten sind.
+\[ (a,\ b) \in E \Rightarrow (a \in S_0 \Leftrightarrow b \in S_1) \qquad (S_0 \cup S_1 = V)\]
+Es sei $\mu$ eine Abbildung von der Menge aller Knoten auf zwei diskrete Werte. Der abgebildete Wert eines Knoten $v$ gibt vor, in welcher der beiden Mengen $v$ enthalten ist.
+\[ \mu : V \rightarrow \{0,\ 1\} \qquad v \in S_i \Leftrightarrow \mu(V) = i \]
+Jeder Knoten $v$ im Dualgraph besitzt Koordinaten $x(v),\ y(v)$ der Position des entsprechenden Planquadrats auf dem Brachland. Es sei
+\begin{equation}
+	\mu(v) = x(v) + y(v) \mod 2 \label{eq:abbildung}
+\end{equation}
+Zwei benachbarte Planquadrate unterscheiden sich entweder in $x$- oder $y$-Koordinate um genau 1. Demnach ist die Differenz zwischen der Summe der jeweiligen Koordinaten zweier benachbarter Quadrate immer genau 1. Zwei um 1 verschiedene Zahlen besitzen unterschiedliche Reste für Modulo 2.
+\begin{align*}
+	(a,\ b) \in E &\Rightarrow \left|\mu(a) - \mu(b)\right| = 1 \\
+	\therefore \mu(a) = 0 &\Leftrightarrow \mu(b) = 1
+\end{align*}
+\begin{flushright}
+	\Large$\square$
+\end{flushright}
+
+Die Abbildung $\mu$ erzeugt ein Schachbrettmuster, welches über den Dualgraphen gelegt wird. Bei der Verwendung von $\mu$ als Bildungsvorschrift ist eine korrekte Färbung garaniert.
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[scale=1.5, thick]
+		\foreach \pos in {(0, 0), (2, 2), (1, 1)}{
+			\draw[very thick, -{latex}, shorten >=3mm] \pos to ++(0, 1);
+		}
+		\foreach \pos in {(1, 2), (1, 0), (3, 2), (4, 1)}{
+			\draw[very thick, {latex}-, shorten <=3mm] \pos to ++(0, 1);
+		}
+		\foreach \pos in {(1, 1), (0, 2), (2, 2)}{
+			\draw[very thick, -{latex}, shorten >=3mm] \pos to ++(1, 0);
+		}
+		\foreach \pos in {(0, 1), (1, 2), (3, 2)}{
+			\draw[very thick, {latex}-, shorten <=3mm] \pos to ++(1, 0);
+		}
+		\foreach \pos in {(0, 0), (1, 1), (0, 2), (2, 2), (4, 2), (1, 3), (3, 3), (0, 1), (1, 0), (2, 1), (1, 2), (3, 2), (4, 1), (2, 3)}{
+			\draw[fill=white] \pos circle (2mm);
+		}
+		\foreach \pos in {(0, 0), (0, 2), (1, 1), (1, 3), (2, 0), (2, 2), (3, 1), (3, 3), (4, 0), (4, 2)}{
+			\fill[black, opacity=.2] \pos++(-.5, -.5) rectangle +(1, 1);
+		}
+	\end{tikzpicture}
+	\caption{Schachbrettmuster}
+\end{figure}
+\subsection{Bearbeitung des Brachlandes}
+Nachdem die 2-Färbung mit minimalen zusätzlichen Arbeiten unternommen wurde, sind alle notwendigen Erdarbeiten bekannt: Jede Kante im konfliktfreien Dualgraph gibt eine Erdarbeit zwischen den Planquadraten der inzidenten Knoten in eine bestimmte Richtung an. Die Menge an zu versetzender Erde ist gegeben durch Gleichungen \eqref{eq:arbeit} und \eqref{eq:deltaw}, und ist abhängig davon, ob die Kante gedreht wurde.
+\begin{equation}
+	w_{end} = 
+	\begin{cases}
+		w\\
+		w + \delta w
+	\end{cases}
+	= \frac{1}{2}(1 \pm \Delta)
+\end{equation}
+Die einzelnen Arbeiten werden sortiert nach Erdmenge in fallender Reihenfolge ausgeführt. An diesem Punkt werden eventuelle Begünstigungen nach Fall (1) ausgenutzt:
+Durch die 2-Färbung ist jeder Knoten eingehend oder ausgehend. Demnach steigt die Höhe eines eingehenden Knotens mit jeder Erdarbeit stetig, während die Höhe eines ausgehenden Knotens fällt. Damit ist garantiert, dass nachdem ein eingehender Knoten unter eine bestimmte Höhe während den Erdarbeiten fällt, er darunter bleiben wird. Gleiches gilt umgekehrt für ausgehende Knoten. Diese Eigenschaft des konfliktfreien Dualgraphen ist dessen \emph{Invariante}.
+
+Ist durch vorherige Erdarbeiten die Differenz schon vorhanden, die mit einer Erdarbeit geschaffen werden sollte, kann diese ausgelassen werden. Durch die Invariante ist garantiert, dass folgende Arbeiten die Differenz erhalten oder nur vergrößern, sodass die entsprechende Grenze kritisch bleibt.
+\begin{framed}
+	Erdarbeiten an Grenzen, welche durch vorherige Arbeit schon kritisch sind, können unter Erhaltung der Invariante des Dualgraphen ausgelassen werden.
+\end{framed}
+Die ausgelassenen Erdarbeiten bedeuten Einsparungen in den Gesamtkosten. Sind alle Erdarbeiten getätigt worden beziehungweise alle verbliebenen Erdarbeiten redundant, ist jede Grenze kritisch, und er minimale Pfad somit ein kritischer Pfad.
 \newpage
 \section*{Anhang}
+\subsection*{Zyklenfreiheit des Dualgraphen}
+Es ist anzumerken, dass der Dualgraph immer zyklenfrei ist. Wäre ein Zyklus enthalten, würde das zu einem Widerspruch führen, da jeder Nachfolger im Zyklus größer sein muss als der bisherige Knoten. So müsste ein beliebiger Knoten im Zyklus größer als er selbst sein. Diese Situation ist in Abbildung \eqref{fig:penrose} dargestellt.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.5\textwidth]{img/penrose}
+	\caption{Verwirrung}
+	\label{fig:penrose}
+\end{figure}
 \begin{thebibliography}{9}
 \bibitem{dijkstra}
 	Skiena, S., \textsc{Dijkstra’s algorithm}, S. 225--227,\\
   \emph{Implementing Discrete Mathematics: Combinatorics and Graph Theory with Mathematica, Reading, MA: Addison-Wesley},
   1990
 \end{thebibliography}
+\newpage
+\subsection*{Minimale Pfade}
+\label{app:paths}
+Die Höhen der Felder sind in den folgenden Abbildungen als Heatmaps dargestellt, wobei hellere Farbtöne höhere Erhebungen darstellen.
+\begin{center}
+	\begin{minipage}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/resized1}\par
+		\ttfamily wildschwein1.txt
+	\end{minipage}\hfill
+	\begin{minipage}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/resized2}\par
+		\ttfamily wildschwein2.txt
+	\end{minipage}\hfill
+	\begin{minipage}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/resized3}\par
+		\ttfamily wildschwein3.txt
+	\end{minipage}
+	\vspace{1em}
+
+	\begin{minipage}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/resized4}\par
+		\ttfamily wildschwein4.txt
+	\end{minipage}\hspace*{6mm}
+	\begin{minipage}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/resized5}\par
+		\ttfamily wildschwein5.txt
+	\end{minipage}
+\end{center}
 \end{document}
